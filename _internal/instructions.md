@@ -140,7 +140,7 @@ Before finalizing **any** output, silently run through this checklist:
 
 Each pattern folder gets a `theory.md`. Here is the **exact template** to follow:
 
-```markdown
+````markdown
 # Pattern <N>: <Pattern Name> (<Category>)
 
 ## 🧒 The 5-Year-Old Explanation
@@ -327,7 +327,7 @@ graph LR
 |---|---------|-----------|-------------|
 | 1 | ...     | Pure Python | ... |
 | 2 | ...     | Django      | ... |
-```
+````
 
 ---
 
