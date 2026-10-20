@@ -1,0 +1,51 @@
+name: DesignPatterns Quality & Security Gate
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  syntax-and-compilation:
+    name: Python Architecture Compilation Check
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Compile all Python files
+        run: |
+          python -m compileall -q .
+          echo "✅ All design pattern implementations compiled successfully without SyntaxErrors."
+
+      - name: Basic Syntax & Import Linter
+        run: |
+          pip install ruff
+          ruff check . --select=E9,F63,F7,F82 --output-format=github
+
+  security-scan:
+    name: Gitleaks Secret Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Run Gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
