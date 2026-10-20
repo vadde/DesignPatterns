@@ -25,7 +25,7 @@ events to a list. The current balance is derived by replaying history.
 
 from dataclasses import dataclass
 from datetime import datetime
-from typing import List, Dict
+from typing import List, Dict, Protocol
 
 
 # ─── 1. Events (Immutable Facts) ───────────────────────
@@ -47,6 +47,12 @@ class MoneyDepositedEvent(Event):
 @dataclass(frozen=True)
 class MoneyWithdrawnEvent(Event):
     amount: int = 0
+
+
+class Projection(Protocol):
+    """Protocol for Read Models / Projections that consume domain events."""
+    def handle_event(self, event: Event) -> None:
+        ...
 
 
 # ─── 2. Event Store (The Single Source of Truth) ───────
