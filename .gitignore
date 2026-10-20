@@ -1,6 +1,86 @@
-__pycache__/
-*.pyc
+# =========================================================================
+# vadde.github.io — Production .gitignore
+# Modern exclusions for IDEs, OS artifacts, build outputs, and caches
+# =========================================================================
+
+# --- JetBrains / IntelliJ / WebStorm ---
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# --- Visual Studio Code & Modern AI Code Editors ---
+.vscode/
+*.code-workspace
+.claude/
+.cursor/
+.windsurf/
+.zed/
+.continue/
+
+# --- Editor Backups & Swaps ---
+*.swp
+*.swo
+*~
+*.bak
+*.sublime-project
+*.sublime-workspace
+
+# --- Operating System Artifacts ---
+# macOS
 .DS_Store
-*.egg-info/
-.env
+.AppleDouble
+.LSOverride
+._*
+.Spotlight-V100
+.Trashes
+Icon\r\r
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+.fuse_hidden*
+.directory
+
+# --- Node / JavaScript / Web Tooling ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-store/
+.npm/
+.parcel-cache/
+.next/
+.nuxt/
+dist/
+build/
+
+# --- Python & Environments (if scripts are run locally) ---
+__pycache__/
+*.py[cod]
+*$py.class
 .venv/
+venv/
+env/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# --- Temporary Files, Logs & Binary Artifacts ---
+*.log
+tmp/
+temp/
+.cache/
+*.exe
+*.o
+*.obj
+*.dll
+*.dylib
+*.so
