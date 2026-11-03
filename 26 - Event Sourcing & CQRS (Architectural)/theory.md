@@ -64,8 +64,8 @@ flowchart TB
     
     ES -.->|Async Publish Event| RDB
     
-    C -->|Send Command (POST)| Cmd
-    C -->|Ask Query (GET)| Qry
+    C -->|"Send Command (POST)"| Cmd
+    C -->|"Ask Query (GET)"| Qry
 ```
 
 ---

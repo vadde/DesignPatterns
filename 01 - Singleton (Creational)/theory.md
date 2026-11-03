@@ -33,7 +33,7 @@ That's a Singleton: **one instance, shared by everyone**.
 
 **Anti-signals (when NOT to use this pattern):**
 - You need multiple instances with different configs → use **Factory Method** (Ch 02)
-- You want to pass dependencies explicitly → use **Dependency Injection** (Ch 24)
+- You want to pass dependencies explicitly → use **Dependency Injection** (Ch 25)
 - You just need shared data, not a shared object → use a module-level variable
 - Testing requires isolated instances → Singleton makes mocking painful
 
@@ -296,7 +296,7 @@ graph LR
     S --> FW["11 Flyweight<br/>(flyweight factory is singleton)"]
     S --> FA["10 Facade<br/>(facade often singleton)"]
     ST["20 Strategy"] -.->|"Often confused"| S
-    DI["24 Dependency Injection"] -.->|"Better alternative"| S
+    DI["25 Dependency Injection"] -.->|"Better alternative"| S
 
     style DI fill:#51cf66,color:#fff
 ```
@@ -362,7 +362,7 @@ graph LR
 
 4. No! The subclass and parent share `cls._instance` if using a simple `__new__` override. The first one created wins. Use a metaclass with a per-class dict to fix this.
 
-5. **No!** Singleton guarantees ONE instance. You need THREE. Use **Factory Method** (Ch 02) or **Dependency Injection** (Ch 24) to create and manage multiple configured instances.
+5. **No!** Singleton guarantees ONE instance. You need THREE. Use **Factory Method** (Ch 02) or **Dependency Injection** (Ch 25) to create and manage multiple configured instances.
 
 6. Borg shares **state** (same `__dict__`) but creates **different objects** (`id()` differs). Singleton shares the **object itself** (same `id()`). Borg is useful when identity doesn't matter but shared state does.
 

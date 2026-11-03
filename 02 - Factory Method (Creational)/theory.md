@@ -287,7 +287,7 @@ graph LR
     FM["02 Factory Method"] --> AF["03 Abstract Factory<br/>(FM is a simplified AF)"]
     FM --> TM["21 Template Method<br/>(FM is often called<br/>inside template method)"]
     FM --> PR["05 Prototype<br/>(alternative: clone instead<br/>of construct)"]
-    FM --> DI["24 Dependency Injection<br/>(DI generalizes the factory idea)"]
+    FM --> DI["25 Dependency Injection<br/>(DI generalizes the factory idea)"]
     S["01 Singleton"] -.->|"Factory can be<br/>a singleton"| FM
 ```
 

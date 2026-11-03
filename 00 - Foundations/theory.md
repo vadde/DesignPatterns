@@ -246,7 +246,7 @@ classDiagram
 When you plug in a lamp, you don't wire it directly to the power plant. You plug it into a **wall outlet** (the abstraction). The lamp doesn't know or care if the electricity comes from solar, wind, or coal. And the power plant doesn't know or care if it's powering a lamp, a fridge, or a TV.
 
 #### The Rule
-Don't import concrete classes directly. Depend on interfaces/protocols. This is the foundation of **Dependency Injection** (Chapter 24).
+Don't import concrete classes directly. Depend on interfaces/protocols. This is the foundation of **Dependency Injection** (Chapter 25).
 
 #### Architecture: Before vs After
 
@@ -260,17 +260,17 @@ flowchart TB
     subgraph "✅ With DIP"
         D["OrderService"] -->|"depends on"| E["Database (Protocol)"]
         D -->|"depends on"| F["EmailSender (Protocol)"]
-        E <|.. G["MySQLDatabase"]
-        E <|.. H["PostgresDatabase"]
-        F <|.. I["SMTPEmailSender"]
-        F <|.. J["SendGridSender"]
+        E -.-> G["MySQLDatabase"]
+        E -.-> H["PostgresDatabase"]
+        F -.-> I["SMTPEmailSender"]
+        F -.-> J["SendGridSender"]
     end
 ```
 
 #### Which Patterns Embody DIP?
 | Pattern | How It Uses DIP |
 |---------|----------------|
-| **Dependency Injection** (Ch 24) | THE pattern for DIP |
+| **Dependency Injection** (Ch 25) | THE pattern for DIP |
 | **Abstract Factory** (Ch 03) | Client depends on factory interface, not concrete factories |
 | **Bridge** (Ch 07) | Abstraction depends on implementor interface |
 | **Repository** (Ch 23) | Business logic depends on repository interface, not DB |

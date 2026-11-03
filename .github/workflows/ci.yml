@@ -36,6 +36,22 @@ jobs:
           pip install ruff
           ruff check . --select=E9,F63,F7,F82 --output-format=github
 
+  docs-verification:
+    name: 15-Gate Living Docs Audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Run 15-Gate Headless Verification Suite
+        run: |
+          chmod +x scripts/build-docs.sh scripts/test-docs.sh scripts/audit_ascii_boxes.py scripts/audit_collapsible_elements.py scripts/audit_links_and_anchors.py scripts/audit_monospace_badging.py
+          make docs-test
+
   security-scan:
     name: Gitleaks Secret Audit
     runs-on: ubuntu-latest
