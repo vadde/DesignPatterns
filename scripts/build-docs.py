@@ -171,6 +171,25 @@ def classify_code_block(lang: str, code: str) -> tuple[str, str, str]:
 
     return "📋 Technical Blueprint & Specification", "dna-label-spec", "plaintext"
 
+def detect_diagram_tag(code: str) -> tuple[str, str]:
+    """Detect dynamic semantic diagram tag and caption from mermaid source code."""
+    cleaned = code.strip()
+    first_line = cleaned.splitlines()[0].strip().lower() if cleaned else ""
+    if first_line.startswith("mindmap"):
+        return ("🧠 Conceptual Mindmap & Taxonomy", "Taxonomic pattern relationships & mental models")
+    elif first_line.startswith("classdiagram"):
+        return ("📐 Class Structure & UML Blueprint", "Object-oriented class hierarchy & relationship contracts")
+    elif first_line.startswith("sequencediagram"):
+        return ("⚡ Runtime Interaction & Sequence Flow", "Temporal message passing & execution lifecycle")
+    elif first_line.startswith("statediagram"):
+        return ("⚙️ State Machine & Lifecycle", "State transitions, triggers & invariant guards")
+    elif first_line.startswith("erdiagram"):
+        return ("🗄️ Entity Relationship Diagram", "Schema entity models & relational cardinalities")
+    elif "subgraph" in cleaned.lower():
+        return ("🏛️ System Architecture & Subgraphs", "Component topology & systemic boundary constraints")
+    else:
+        return ("🔄 Architectural Decision & Flow Logic", "Decision branching & algorithmic state transitions")
+
 def render_markdown(text: str, current_folder: str = "") -> str:
     """
     Converts markdown content into semantic, accessible HTML with:
@@ -348,10 +367,11 @@ def render_markdown(text: str, current_folder: str = "") -> str:
     # 11. Restore mermaid blocks into Canvas Containers (1:1 DSA standard)
     for i, (diag_id, code) in enumerate(mermaid_blocks):
         escaped_mermaid = html.escape(code.strip())
+        tag_title, caption_text = detect_diagram_tag(code)
         wb = (
             f'<div class="canvas-container" id="canvas-{diag_id}">\n'
             f'  <div class="canvas-header-bar">\n'
-            f'    <span class="canvas-type-tag">📐 Architecture Blueprint · State Machine</span>\n'
+            f'    <span class="canvas-type-tag">{tag_title}</span>\n'
             f'    <div class="canvas-controls-group">\n'
             f'      <button class="canvas-tool-btn zoom-out-btn" title="Zoom Out">−</button>\n'
             f'      <span class="zoom-level-badge">100%</span>\n'
@@ -365,7 +385,7 @@ def render_markdown(text: str, current_folder: str = "") -> str:
             f'      <pre class="mermaid" id="{diag_id}">\n{escaped_mermaid}\n      </pre>\n'
             f'    </div>\n'
             f'  </div>\n'
-            f'  <div class="canvas-caption">Architecture &amp; structural interaction graph</div>\n'
+            f'  <div class="canvas-caption">{caption_text}</div>\n'
             f'</div>'
         )
         text = text.replace(f"___MERMAID_PLACEHOLDER_{i}___", wb)

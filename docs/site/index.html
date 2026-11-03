@@ -20,15 +20,60 @@
   <script>
     mermaid.initialize({
       startOnLoad: false,
-      theme: 'dark',
+      theme: 'base',
       themeVariables: {
         darkMode: true,
         background: 'transparent',
-        primaryColor: '#00f2fe',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        fontSize: '14px',
+        primaryColor: 'rgba(15, 23, 42, 0.9)',
         primaryBorderColor: '#00f2fe',
-        primaryTextColor: '#f1f5f9',
-        lineColor: '#a855f7',
-        fontFamily: 'Inter, system-ui, sans-serif'
+        primaryTextColor: '#f8fafc',
+        lineColor: '#38bdf8',
+        secondaryColor: 'rgba(30, 41, 59, 0.85)',
+        tertiaryColor: 'rgba(51, 65, 85, 0.75)',
+        textColor: '#f8fafc',
+        mainBkg: 'rgba(15, 23, 42, 0.85)',
+        nodeBorder: '#00f2fe',
+        clusterBkg: 'rgba(10, 16, 32, 0.65)',
+        clusterBorder: 'rgba(255, 255, 255, 0.15)',
+        titleColor: '#00f2fe',
+        edgeLabelBackground: 'rgba(13, 20, 39, 0.95)',
+        actorBkg: 'rgba(15, 23, 42, 0.9)',
+        actorBorder: '#00f2fe',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#38bdf8',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: 'rgba(15, 23, 42, 0.9)',
+        labelBoxBorderColor: '#a855f7',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#f8fafc',
+        noteBorderColor: '#f59e0b',
+        noteBkgColor: 'rgba(245, 158, 11, 0.15)',
+        noteTextColor: '#f8fafc',
+        cScale0: '#0284c7',
+        cScale1: '#7c3aed',
+        cScale2: '#059669',
+        cScale3: '#d97706',
+        cScale4: '#e11d48',
+        cScaleLabel0: '#ffffff',
+        cScaleLabel1: '#ffffff',
+        cScaleLabel2: '#ffffff',
+        cScaleLabel3: '#ffffff',
+        cScaleLabel4: '#ffffff'
+      },
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: false,
+        padding: 16,
+        nodeSpacing: 50,
+        rankSpacing: 50
+      },
+      mindmap: {
+        useMaxWidth: false,
+        padding: 20
       }
     });
   </script>
@@ -316,7 +361,14 @@ graph TB
       <button class="theater-tool-btn" id="theater-zoom-in" title="Zoom In (+)">+</button>
       <button class="theater-tool-btn" id="theater-zoom-reset" title="Reset Zoom (⟲)">100%</button>
       <button class="theater-tool-btn" id="theater-zoom-fit" title="Fit to Viewport">Fit</button>
-      <button class="theater-close-btn" id="theater-close-btn" title="Close Theater (Esc)">✕ Close</button>
+      <button class="theater-close-btn" id="theater-close-btn" title="Close Theater Workbench (Esc)" aria-label="Close Theater">
+        <svg class="close-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span class="close-btn-text">Close</span>
+        <kbd class="close-kbd-badge">ESC</kbd>
+      </button>
     </div>
   </div>
   <div class="theater-viewport" id="theater-viewport">

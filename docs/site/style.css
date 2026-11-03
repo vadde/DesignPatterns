@@ -1658,6 +1658,336 @@ body.resizing-sidebar {
 }
 
 /* ------------------------------------------------------------------------------
+   11b. MERMAID HIGH-CONTRAST THEMING & ZERO-TRUNCATION ENGINE
+   ------------------------------------------------------------------------------ */
+.mermaid,
+.mermaid svg,
+.theater-content-surface,
+.theater-content-surface svg {
+  color: var(--text-main);
+  font-family: var(--font-body);
+}
+
+/* Dynamic Box Sizing & Universal Text Overflow Containment */
+.mermaid svg text,
+.mermaid svg tspan,
+.theater-content-surface svg text,
+.theater-content-surface svg tspan {
+  font-family: var(--font-body) !important;
+  overflow: visible !important;
+}
+
+.mermaid svg foreignObject,
+.theater-content-surface svg foreignObject {
+  overflow: visible !important;
+}
+
+.mermaid svg foreignObject div,
+.theater-content-surface svg foreignObject div {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  white-space: normal !important;
+  word-break: break-word !important;
+  text-align: center !important;
+  line-height: 1.35 !important;
+  padding: 4px 8px !important;
+  box-sizing: border-box !important;
+}
+
+/* Flowchart & Architecture Nodes */
+.mermaid svg .node rect,
+.mermaid svg .node circle,
+.mermaid svg .node ellipse,
+.mermaid svg .node polygon,
+.mermaid svg .node path,
+.theater-content-surface svg .node rect,
+.theater-content-surface svg .node circle,
+.theater-content-surface svg .node ellipse,
+.theater-content-surface svg .node polygon,
+.theater-content-surface svg .node path {
+  stroke-width: 1.5px !important;
+  rx: 8px !important;
+  ry: 8px !important;
+  transition: all var(--t-fast) ease;
+}
+
+/* Flowchart Node Text */
+.mermaid svg .node .label,
+.mermaid svg .node text,
+.mermaid svg .node span,
+.theater-content-surface svg .node .label,
+.theater-content-surface svg .node text,
+.theater-content-surface svg .node span {
+  fill: var(--text-main) !important;
+  color: var(--text-main) !important;
+  font-weight: 500 !important;
+  font-size: 0.88rem !important;
+}
+
+/* Subgraph Clusters (Component Boundaries) */
+.mermaid svg .cluster rect,
+.theater-content-surface svg .cluster rect {
+  fill: rgba(10, 16, 32, 0.65) !important;
+  stroke: rgba(255, 255, 255, 0.15) !important;
+  stroke-width: 1px !important;
+  stroke-dasharray: 4 4;
+  rx: 12px !important;
+}
+
+.mermaid svg .cluster text,
+.mermaid svg .cluster span,
+.theater-content-surface svg .cluster text,
+.theater-content-surface svg .cluster span {
+  fill: var(--accent-cyan) !important;
+  color: var(--accent-cyan) !important;
+  font-weight: 700 !important;
+  font-size: 0.85rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Edge Labels & Connectors */
+.mermaid svg .edgeLabel,
+.theater-content-surface svg .edgeLabel {
+  background-color: var(--bg-card) !important;
+  border-radius: var(--radius-sm);
+}
+
+.mermaid svg .edgeLabel rect,
+.theater-content-surface svg .edgeLabel rect {
+  fill: var(--bg-deep) !important;
+  opacity: 0.9;
+  rx: 4px;
+}
+
+.mermaid svg .edgeLabel text,
+.mermaid svg .edgeLabel span,
+.theater-content-surface svg .edgeLabel text,
+.theater-content-surface svg .edgeLabel span {
+  fill: var(--text-muted) !important;
+  color: var(--text-muted) !important;
+  font-size: 0.78rem !important;
+  font-family: var(--font-mono) !important;
+}
+
+.mermaid svg .flowchart-link,
+.mermaid svg path.path,
+.theater-content-surface svg .flowchart-link,
+.theater-content-surface svg path.path {
+  stroke: rgba(148, 163, 184, 0.6) !important;
+  stroke-width: 1.5px !important;
+}
+
+/* UML Class Diagrams */
+.mermaid svg g.classGroup rect,
+.theater-content-surface svg g.classGroup rect {
+  fill: var(--bg-card) !important;
+  stroke: var(--bg-card-border-glow) !important;
+  stroke-width: 1.5px !important;
+  rx: 6px;
+}
+
+.mermaid svg g.classGroup text,
+.theater-content-surface svg g.classGroup text {
+  fill: var(--text-main) !important;
+  color: var(--text-main) !important;
+  font-size: 0.82rem !important;
+}
+
+/* Mindmap Theming (Eliminates Black-on-Black Contrast Failure) */
+.mermaid svg .mindmap-node text,
+.mermaid svg .mindmap-node tspan,
+.theater-content-surface svg .mindmap-node text,
+.theater-content-surface svg .mindmap-node tspan {
+  fill: #ffffff !important;
+  color: #ffffff !important;
+  font-weight: 600 !important;
+  font-size: 0.88rem !important;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Mindmap Root Node */
+.mermaid svg .mindmap-node.section-root rect,
+.mermaid svg .mindmap-node.section-root circle,
+.theater-content-surface svg .mindmap-node.section-root rect,
+.theater-content-surface svg .mindmap-node.section-root circle {
+  fill: #0ea5e9 !important;
+  stroke: #38bdf8 !important;
+  stroke-width: 2.5px !important;
+}
+
+/* Mindmap Section Nodes (Vibrant Jewels with White Text) */
+.mermaid svg .mindmap-node.section-0 rect,
+.mermaid svg .mindmap-node.section-0 path,
+.theater-content-surface svg .mindmap-node.section-0 rect,
+.theater-content-surface svg .mindmap-node.section-0 path {
+  fill: #0284c7 !important;
+  stroke: #38bdf8 !important;
+}
+
+.mermaid svg .mindmap-node.section-1 rect,
+.mermaid svg .mindmap-node.section-1 path,
+.theater-content-surface svg .mindmap-node.section-1 rect,
+.theater-content-surface svg .mindmap-node.section-1 path {
+  fill: #7c3aed !important;
+  stroke: #a855f7 !important;
+}
+
+.mermaid svg .mindmap-node.section-2 rect,
+.mermaid svg .mindmap-node.section-2 path,
+.theater-content-surface svg .mindmap-node.section-2 rect,
+.theater-content-surface svg .mindmap-node.section-2 path {
+  fill: #059669 !important;
+  stroke: #34d399 !important;
+}
+
+.mermaid svg .mindmap-node.section-3 rect,
+.mermaid svg .mindmap-node.section-3 path,
+.theater-content-surface svg .mindmap-node.section-3 rect,
+.theater-content-surface svg .mindmap-node.section-3 path {
+  fill: #d97706 !important;
+  stroke: #fbbf24 !important;
+}
+
+.mermaid svg .mindmap-node.section-4 rect,
+.mermaid svg .mindmap-node.section-4 path,
+.theater-content-surface svg .mindmap-node.section-4 rect,
+.theater-content-surface svg .mindmap-node.section-4 path {
+  fill: #e11d48 !important;
+  stroke: #fb7185 !important;
+}
+
+/* Mindmap Edges */
+.mermaid svg path.section-edge-0, .theater-content-surface svg path.section-edge-0 { stroke: #38bdf8 !important; stroke-width: 2px !important; }
+.mermaid svg path.section-edge-1, .theater-content-surface svg path.section-edge-1 { stroke: #a855f7 !important; stroke-width: 2px !important; }
+.mermaid svg path.section-edge-2, .theater-content-surface svg path.section-edge-2 { stroke: #34d399 !important; stroke-width: 2px !important; }
+.mermaid svg path.section-edge-3, .theater-content-surface svg path.section-edge-3 { stroke: #fbbf24 !important; stroke-width: 2px !important; }
+.mermaid svg path.section-edge-4, .theater-content-surface svg path.section-edge-4 { stroke: #fb7185 !important; stroke-width: 2px !important; }
+
+/* THEME OVERRIDES FOR AERO MICA (HIGH CONTRAST ON BRIGHT FROSTED SURFACE) */
+[data-theme="mica"] .mermaid svg .node rect,
+[data-theme="mica"] .mermaid svg .node circle,
+[data-theme="mica"] .mermaid svg .node polygon,
+[data-theme="mica"] .mermaid svg .node path,
+[data-theme="mica"] .theater-content-surface svg .node rect,
+[data-theme="mica"] .theater-content-surface svg .node circle,
+[data-theme="mica"] .theater-content-surface svg .node polygon,
+[data-theme="mica"] .theater-content-surface svg .node path {
+  fill: #ffffff !important;
+  stroke: rgba(14, 165, 233, 0.45) !important;
+}
+
+[data-theme="mica"] .mermaid svg .node .label,
+[data-theme="mica"] .mermaid svg .node text,
+[data-theme="mica"] .mermaid svg .node span,
+[data-theme="mica"] .theater-content-surface svg .node .label,
+[data-theme="mica"] .theater-content-surface svg .node text,
+[data-theme="mica"] .theater-content-surface svg .node span {
+  fill: #0f172a !important;
+  color: #0f172a !important;
+}
+
+[data-theme="mica"] .mermaid svg .cluster rect,
+[data-theme="mica"] .theater-content-surface svg .cluster rect {
+  fill: rgba(241, 245, 249, 0.85) !important;
+  stroke: rgba(15, 23, 42, 0.22) !important;
+}
+
+[data-theme="mica"] .mermaid svg .cluster text,
+[data-theme="mica"] .mermaid svg .cluster span,
+[data-theme="mica"] .theater-content-surface svg .cluster text,
+[data-theme="mica"] .theater-content-surface svg .cluster span {
+  fill: #0284c7 !important;
+  color: #0284c7 !important;
+}
+
+[data-theme="mica"] .mermaid svg g.classGroup rect,
+[data-theme="mica"] .theater-content-surface svg g.classGroup rect {
+  fill: #ffffff !important;
+  stroke: rgba(14, 165, 233, 0.45) !important;
+}
+
+[data-theme="mica"] .mermaid svg g.classGroup text,
+[data-theme="mica"] .theater-content-surface svg g.classGroup text {
+  fill: #0f172a !important;
+  color: #0f172a !important;
+}
+
+/* Mica Mindmap Theming (Pastel Jewel Cards with High-Contrast Dark Text) */
+[data-theme="mica"] .mermaid svg .mindmap-node.section-root rect,
+[data-theme="mica"] .mermaid svg .mindmap-node.section-root circle,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-root rect,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-root circle {
+  fill: #e0f2fe !important;
+  stroke: #0284c7 !important;
+}
+
+[data-theme="mica"] .mermaid svg .mindmap-node.section-0 rect,
+[data-theme="mica"] .mermaid svg .mindmap-node.section-0 path,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-0 rect,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-0 path {
+  fill: #bae6fd !important;
+  stroke: #0284c7 !important;
+}
+
+[data-theme="mica"] .mermaid svg .mindmap-node.section-1 rect,
+[data-theme="mica"] .mermaid svg .mindmap-node.section-1 path,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-1 rect,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-1 path {
+  fill: #ede9fe !important;
+  stroke: #7c3aed !important;
+}
+
+[data-theme="mica"] .mermaid svg .mindmap-node.section-2 rect,
+[data-theme="mica"] .mermaid svg .mindmap-node.section-2 path,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-2 rect,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-2 path {
+  fill: #d1fae5 !important;
+  stroke: #059669 !important;
+}
+
+[data-theme="mica"] .mermaid svg .mindmap-node.section-3 rect,
+[data-theme="mica"] .mermaid svg .mindmap-node.section-3 path,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-3 rect,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-3 path {
+  fill: #fef3c7 !important;
+  stroke: #d97706 !important;
+}
+
+[data-theme="mica"] .mermaid svg .mindmap-node.section-4 rect,
+[data-theme="mica"] .mermaid svg .mindmap-node.section-4 path,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-4 rect,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node.section-4 path {
+  fill: #ffe4e6 !important;
+  stroke: #e11d48 !important;
+}
+
+[data-theme="mica"] .mermaid svg .mindmap-node text,
+[data-theme="mica"] .mermaid svg .mindmap-node tspan,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node text,
+[data-theme="mica"] .theater-content-surface svg .mindmap-node tspan {
+  fill: #0f172a !important;
+  color: #0f172a !important;
+  font-weight: 600 !important;
+  text-shadow: none !important;
+}
+
+/* THEME OVERRIDES FOR CYBERPUNK HOLO */
+[data-theme="holo"] .mermaid svg .cluster text,
+[data-theme="holo"] .theater-content-surface svg .cluster text {
+  fill: #ffaa00 !important;
+  color: #ffaa00 !important;
+}
+
+/* THEME OVERRIDES FOR OBSIDIAN MATRIX */
+[data-theme="matrix"] .mermaid svg .cluster text,
+[data-theme="matrix"] .theater-content-surface svg .cluster text {
+  fill: #00ff66 !important;
+  color: #00ff66 !important;
+}
+
+/* ------------------------------------------------------------------------------
    12. CODE CONTAINERS & INTERACTIVE PYTHON EXAMPLES
    ------------------------------------------------------------------------------ */
 
@@ -1945,15 +2275,77 @@ body.theater-open {
 }
 
 .theater-close-btn {
-  background: rgba(239, 68, 68, 0.18) !important;
-  border-color: rgba(239, 68, 68, 0.45) !important;
-  color: #fca5a5 !important;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  border-radius: var(--radius-full);
+  background: rgba(244, 63, 94, 0.15) !important;
+  border: 1px solid rgba(244, 63, 94, 0.45) !important;
+  color: #fda4af !important;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 10px;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  transition: all var(--t-fast) cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
 .theater-close-btn:hover {
-  background: rgba(239, 68, 68, 0.35) !important;
-  border-color: #ef4444 !important;
+  background: rgba(244, 63, 94, 0.35) !important;
+  border-color: #fb7185 !important;
   color: #ffffff !important;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.55), 0 4px 14px rgba(0, 0, 0, 0.4);
+  transform: translateY(-1px);
+}
+
+.theater-close-btn:active {
+  transform: translateY(0);
+}
+
+.close-icon-svg {
+  flex-shrink: 0;
+  transition: transform 0.22s ease;
+}
+
+.theater-close-btn:hover .close-icon-svg {
+  transform: rotate(90deg);
+}
+
+.close-kbd-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 5px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(244, 63, 94, 0.3);
+  border-radius: 4px;
+  color: #fecdd3;
+  line-height: 1.2;
+}
+
+[data-theme="mica"] .theater-close-btn {
+  background: rgba(225, 29, 72, 0.1) !important;
+  border-color: rgba(225, 29, 72, 0.35) !important;
+  color: #e11d48 !important;
+}
+
+[data-theme="mica"] .theater-close-btn:hover {
+  background: #e11d48 !important;
+  color: #ffffff !important;
+  border-color: #be123c !important;
+  box-shadow: 0 0 16px rgba(225, 29, 72, 0.4);
+}
+
+[data-theme="mica"] .close-kbd-badge {
+  background: rgba(255, 255, 255, 0.85);
+  color: #9f1239;
+  border-color: rgba(225, 29, 72, 0.25);
 }
 
 .theater-viewport {
