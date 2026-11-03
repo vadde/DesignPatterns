@@ -158,15 +158,6 @@
             <button class="hero-btn primary" id="quick-finder-toggle-btn">
               <span>🎯 Pattern Decision Matrix (F)</span>
             </button>
-            <button class="hero-btn secondary" id="btn-expand-all">
-              <span>⊞ Expand All</span>
-            </button>
-            <button class="hero-btn secondary active" id="btn-focus-mode">
-              <span>🎯 Focus Mode</span>
-            </button>
-            <button class="hero-btn secondary" id="btn-collapse-all">
-              <span>⊟ Collapse All</span>
-            </button>
           </div>
 
           <!-- Interactive Pattern Finder & Decision Matrix HUD -->
@@ -295,9 +286,9 @@ graph TB
     <!-- Reading Mode Toolbar (Expand / Collapse & Focus Mode - 1:1 DSA Standard) -->
     <div class="reading-controls-bar">
       <div class="mode-toggles-cluster">
-        <button class="mode-btn" data-action="expand-all" title="Expand all pattern chapters">⊞ Expand All</button>
-        <button class="mode-btn active" data-action="focus-mode" title="Focus mode: Only expand one pattern at a time">🎯 Focus Mode</button>
-        <button class="mode-btn" data-action="collapse-all" title="Collapse all pattern chapters">⊟ Collapse All</button>
+        <button class="mode-btn" id="btn-expand-all" data-action="expand-all" title="Expand all pattern chapters">⊞ Expand All</button>
+        <button class="mode-btn active" id="btn-focus-mode" data-action="focus-mode" title="Focus mode: Only expand one pattern at a time">🎯 Focus Mode</button>
+        <button class="mode-btn" id="btn-collapse-all" data-action="collapse-all" title="Collapse all pattern chapters">⊟ Collapse All</button>
       </div>
       <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-dim);">
         Click chapter headers to toggle accordion
