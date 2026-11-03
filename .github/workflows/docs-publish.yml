@@ -29,7 +29,8 @@ jobs:
 
       - name: Build & Run 15-Gate Headless Verification Suite
         run: |
-          chmod +x scripts/build-docs.sh scripts/test-docs.sh scripts/audit_ascii_boxes.py scripts/audit_collapsible_elements.py scripts/audit_links_and_anchors.py scripts/audit_monospace_badging.py
+          chmod +x scripts/*.sh scripts/*.py
+          make docs-build
           make docs-test
 
       - name: Upload Pages Artifact

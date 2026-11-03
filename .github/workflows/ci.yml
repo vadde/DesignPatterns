@@ -2,7 +2,7 @@ name: DesignPatterns Quality & Security Gate
 
 on:
   push:
-    branches: [main]
+    branches: [main, "feature/**"]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -13,7 +13,7 @@ concurrency:
 
 jobs:
   syntax-and-compilation:
-    name: Python Architecture Compilation Check
+    name: Python Architecture Compilation & Lint
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,15 +26,15 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Compile all Python files
+      - name: Install Linting Tools
         run: |
-          python -m compileall -q .
-          echo "✅ All design pattern implementations compiled successfully without SyntaxErrors."
-
-      - name: Basic Syntax & Import Linter
-        run: |
+          python -m pip install --upgrade pip
           pip install ruff
-          ruff check . --select=E9,F63,F7,F82 --output-format=github
+
+      - name: Run Canonical Architecture Tests & Linter
+        run: |
+          make test
+          make lint
 
   docs-verification:
     name: 15-Gate Living Docs Audit
@@ -49,7 +49,7 @@ jobs:
 
       - name: Run 15-Gate Headless Verification Suite
         run: |
-          chmod +x scripts/build-docs.sh scripts/test-docs.sh scripts/audit_ascii_boxes.py scripts/audit_collapsible_elements.py scripts/audit_links_and_anchors.py scripts/audit_monospace_badging.py
+          chmod +x scripts/*.sh scripts/*.py
           make docs-test
 
   security-scan:

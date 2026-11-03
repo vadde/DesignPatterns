@@ -18,7 +18,7 @@ The documentation portal is built with **zero build toolchain dependencies** (pu
 
 ```
 DesignPatterns/
-├── Makefile                                       # Canonical DevEx commands (docs-build, docs-serve, docs-test, etc.)
+├── Makefile                                       # Canonical DevEx commands (docs-build, docs-serve, docs-test, ci, etc.)
 ├── specs/
 │   └── SPEC-001-design-patterns-futuristic-docs-portal.md # Ratified PRD & System Architecture Spec
 ├── docs/site/
@@ -36,7 +36,7 @@ DesignPatterns/
 ├── .agents/skills/design-patterns-docs-portal/
 │   └── SKILL.md                                   # YOU ARE HERE — Authoritative design & engineering protocol
 └── .github/workflows/
-    ├── ci.yml                                     # Parallel CI verification (Python compile, Ruff, 15-Gate Audit)
+    ├── ci.yml                                     # Canonical CI (make test, make lint, make docs-test)
     └── docs-publish.yml                           # CD workflow deploying verified main pushes to GitHub Pages
 ```
 
@@ -68,27 +68,128 @@ The portal uses a **deep cosmic liquid-glass design system with Aero Mica ambien
 2. **Aero Mica (`[data-theme="mica"]`)**:
    - **High-Contrast Code Blocks**: Code blocks MUST use dark text on bright frosted surface (`background: rgba(255, 255, 255, 0.95); color: #0f172a !important;`). Never leave white-on-white text!
    - **Frosted Theater Tool Buttons**: Must use high-contrast frosted pills (`background: rgba(255, 255, 255, 0.22); border: 1px solid rgba(255, 255, 255, 0.55); color: #ffffff !important;`) so that `+`, `−`, `100%`, and `Fit` buttons pop over the dark modal header.
-3. **Obsidian Dark (`[data-theme="matrix"]` or `[data-theme="obsidian"]`)**: Matte pure-black stealth palette with neon emerald accents.
-4. **Cyberpunk Neon (`[data-theme="holo"]` or `[data-theme="cyberpunk"]`)**: High-saturation electric cyan and amber contrast grid.
+   - **Mindmap & Diagram Nodes**: Mindmaps use bright pastel jewel backgrounds with `#0f172a` high-contrast dark text and `#0284c7` border accents.
+3. **Obsidian Dark (`[data-theme="matrix"]` or `[data-theme="obsidian"]`)**: Matte pure-black stealth palette with neon emerald accents (`#00ff66`).
+4. **Cyberpunk Neon (`[data-theme="holo"]` or `[data-theme="cyberpunk"]`)**: High-saturation electric cyan and amber (`#ffaa00`) contrast grid.
+
+---
+
+## 📐 Dynamic Mermaid Box Fitting & Universal Text Overflow Elimination Engine
+
+### Root Cause Analysis (RCA) of the "Overflowing Boxes" Failure:
+1. **The Dagre Geometry Coupling Pitfall**:
+   - When Mermaid renders HTML labels (`htmlLabels: true`), it uses `<foreignObject width="W" height="H"><div><span class="nodeLabel">Text</span></div></foreignObject>`.
+   - Dagre calculates $W$ and $H$ based on the unpadded text font metrics, then wraps it in an SVG `<rect>` of width $W + 16$ and height $H + 16$.
+   - If external CSS applies `padding`, `display: flex`, `line-height`, or `white-space: normal` to `.mermaid svg foreignObject div`:
+     - Available content width is reduced by the padding (e.g. $-16\text{px}$).
+     - Text wraps onto a second line, doubling its height from $22\text{px}$ to $44\text{px}$.
+     - The SVG `<rect>` remains at its pre-calculated height ($38\text{px}$).
+     - The text physically overflows the box boundary, and the expanded node overlaps adjacent nodes and arrows!
+2. **Cluster Header Overlap**:
+   - Applying `text-transform: uppercase`, `letter-spacing: 0.05em`, or `font-weight: 700` to `.cluster span` expands cluster titles beyond the header bounding box, forcing titles to wrap and crush the top row of nodes.
+3. **Font Loading Race Condition**:
+   - Rendering diagrams before web fonts (`Inter`) finish loading causes Dagre to measure bounding boxes using fallback system fonts. When `Inter` hydrates, glyph widths change, causing line wraps or clipped text.
+
+### The Constitutional Invariants for Mermaid CSS & Layout:
+1. **Never Apply Padding or Forced Flex to `foreignObject div`**:
+   ```css
+   .mermaid svg foreignObject,
+   .theater-content-surface svg foreignObject {
+     overflow: visible !important;
+   }
+
+   .mermaid svg foreignObject div,
+   .theater-content-surface svg foreignObject div {
+     display: inline-block !important;
+     text-align: center !important;
+     box-sizing: border-box !important;
+     padding: 0 !important;
+     margin: 0 !important;
+     line-height: normal !important;
+   }
+   ```
+2. **Cluster Title Normalization**:
+   ```css
+   .mermaid svg .cluster text,
+   .mermaid svg .cluster span,
+   .theater-content-surface svg .cluster text,
+   .theater-content-surface svg .cluster span {
+     fill: var(--accent-cyan) !important;
+     color: var(--accent-cyan) !important;
+     font-weight: 600 !important;
+     font-size: 13px !important;
+     text-transform: none !important;
+     letter-spacing: normal !important;
+   }
+   ```
+3. **Node Typography Invariant**:
+   ```css
+   .mermaid svg .node .label,
+   .mermaid svg .node text,
+   .mermaid svg .node span,
+   .theater-content-surface svg .node .label,
+   .theater-content-surface svg .node text,
+   .theater-content-surface svg .node span {
+     fill: var(--text-main) !important;
+     color: var(--text-main) !important;
+     font-weight: 500 !important;
+     font-size: 14px !important;
+   }
+   ```
+4. **Font-Ready Synchronization**:
+   Always await font loading before invoking `window.mermaid.render()`:
+   ```javascript
+   if (document.fonts && document.fonts.ready) {
+     await document.fonts.ready;
+   }
+   ```
+5. **Raw Diagram Source Preservation**:
+   Store `data-mermaid-src="{escaped_mermaid}"` on every `<pre class="mermaid">` at compile time in `scripts/build-docs.py`. This ensures re-renders never attempt to parse previously hydrated SVG innerHTML.
+
+---
+
+## 🔍 2D Interactive Canvas Zoom & Pan Standard (Card & Theater Mode)
+
+Both in-card viewports (`.canvas-viewport`) and full-screen Theater Mode (`#theater-modal`) adhere to a **unified matrix transform order**:
+
+### Transform Order Standard:
+```javascript
+surface.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
+```
+- **Why `translate(X, Y) scale(Z)`**: Translating first means pan offsets are measured in screen pixels ($1:1$ drag sensitivity). Inverting to `scale(...) translate(...)` scales pan vectors by the zoom factor, resulting in erratic jumps during high zoom.
+- **Transform Origin**: Always `transform-origin: center center;` on `.canvas-content-surface` and `.theater-content-surface`.
+- **Drag Handling**: Suppress drag-panning when clicking interactive elements (`button`, `text`, `foreignObject`, `span`) to allow seamless text selection.
+- **Double-Click Launch**: Double-clicking anywhere on a `.canvas-viewport` automatically triggers Theater Mode.
+
+### Fullscreen Theater Mode Workbench (`<dialog id="theater-modal">`):
+1. **Dynamic Fit Calculation**:
+   ```javascript
+   function calculateFitScale(svgEl) {
+     const availW = Math.max(300, (theaterViewport.clientWidth || window.innerWidth) - 64);
+     const availH = Math.max(200, (theaterViewport.clientHeight || window.innerHeight) - 64);
+     return Math.max(0.15, Math.min(Math.min(availW / vbW, availH / vbH), 3.5));
+   }
+   ```
+2. **Futuristic Capsule Close Button**: Glassmorphic capsule pill with SVG cross icon and `<kbd class="close-kbd-badge">ESC</kbd>`.
+3. **Anti-Dismissal Rule**: Clicking or releasing drags on the viewport surface NEVER dismisses the modal. Only explicit Close button clicks or `Escape` keypress dismisses.
+4. **Scroll Restoration**: Exact `window.scrollY` saved prior to open and restored instantly upon close.
 
 ---
 
 ## ↔️ Interactive Draggable Sidebar Resizer & Collapsible Rail Standard
-
-The navigation sidebar supports continuous draggable resizing and full collapsible rail distraction-free mode:
 
 ### Operational Invariants:
 1. **Collapsible Distraction-Free Reading**:
    - Closed via `#sidebar-close-btn` inside sidebar or `#sidebar-dock-toggle` in header.
    - When collapsed, `body.sidebar-collapsed` shifts `.sidebar` by `margin-left: calc(-1 * var(--sidebar-width)); opacity: 0; visibility: hidden;` and hides `.sidebar-resizer`.
    - Floating reopen tab `#floating-sidebar-toggle` appears on the left edge (`top: calc(var(--topbar-height) + 14px); left: 14px;`).
-   - Global keyboard shortcuts: `⌘B`, `Ctrl+B`, or `[` (when not focused in inputs) toggle the rail instantly.
+   - Global keyboard shortcuts: `⌘B`, `Ctrl+B`, or `[` toggle the rail instantly.
    - State persisted in `localStorage.setItem('dp_sidebar_collapsed', 'true' / 'false')`.
 2. **Bounds Clamping**: Resizing strictly clamped between `MIN_WIDTH = 240px` and `MAX_WIDTH = 560px`.
 3. **Dragging Performance**: During drag, `body.resizing-sidebar` sets `cursor: col-resize !important; user-select: none !important;`.
 4. **Persistence**: Width choice is saved to `localStorage.setItem('dp_sidebar_width', width)`.
 5. **Double-Click Reset**: Double-clicking resets `--sidebar-width` to default `330px`.
-6. **Zero-Truncation Invariant**: Never clip navigation titles with single-line ellipses (`white-space: normal; word-break: break-word`).
+6. **Zero-Truncation Invariant**: Never clip navigation titles with single-line ellipses (`white-space: normal; word-break: break-word; flex-shrink: 0`).
 
 ---
 
@@ -134,65 +235,6 @@ When opening all 28 chapters simultaneously:
 
 ---
 
-## 📊 Mermaid Diagram & Safari WebKit Layout Rules
-
-### 1. Isolated `mermaid.render()` Execution:
-Never rely on uncoordinated `mermaid.run()`. Always use isolated, direct rendering:
-```javascript
-const { svg, bindFunctions } = await window.mermaid.render(renderId, code);
-el.innerHTML = svg;
-if (bindFunctions) bindFunctions(el);
-```
-
-### 2. The Safari WebKit Flex-SVG Sizing Invariant:
-- **Never use `width: auto !important` on `.mermaid svg`** inside flex containers. In WebKit/Safari, an SVG with percentage width and `width: auto` collapses to `0px × 0px`!
-- **CSS Rule**:
-  ```css
-  .mermaid svg {
-    display: block !important;
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    max-height: 580px !important;
-    object-fit: contain;
-    margin: 0 auto;
-  }
-  ```
-- **Intrinsic Dimension Injection**:
-  Extract `vbW` and `vbH` from the SVG's `viewBox` and inject explicit W3C attributes:
-  ```javascript
-  svgEl.setAttribute('width', vbW);
-  svgEl.setAttribute('height', vbH);
-  svgEl.style.aspectRatio = `${vbW} / ${vbH}`;
-  ```
-
-### 3. Escaping & Syntax Cleanliness:
-- Escape `<` and `>` in node labels as `&lt;` / `&gt;` or `≤` / `≥`.
-- Every diagram MUST have a globally unique `id="mermaid-diagram-{uid}"`.
-
----
-
-## 🔍 Fullscreen Theater Mode Workbench
-
-Implemented using native HTML5 `<dialog id="theater-modal">`:
-
-### Critical Invariants:
-1. **Sub-Millisecond Zoom/Pan SLA**:
-   - `.theater-content-surface` MUST specify `transition: none !important;`.
-   - Caching `cachedVbW` and `cachedVbH` upon open eliminates forced reflows during zoom.
-2. **Clear UX Distinction: `100%` vs `Fit`**:
-   - `100%` (`theaterZoomReset`): Resets scale to **`1.0`** (1:1 native pixel scale).
-   - `Fit` (`theaterZoomFit`): Dynamically calculates exact scale based on live viewport boundaries and SVG `viewBox` (`scale = Math.min(availW / vbW, availH / vbH)`).
-3. **Anti-Dismissal Rule (No Accidental Close)**:
-   - Clicks or drag-releases on `.theater-viewport` or SVG canvas MUST NEVER close the modal!
-   - **Only** the explicit Close button (`✕`) or the `Escape` key closes the theater.
-4. **Diagram Text Selection**:
-   - `.theater-content-surface svg text, foreignObject, span` must have `user-select: text !important; cursor: text;`.
-5. **Exact Scroll Position Restoration**:
-   - Save `scrollY` before modal open and restore on close.
-
----
-
 ## 🔊 Curated Web Audio Haptic System (`HapticAudio`)
 
 Tactile acoustic feedback synthesized purely via Web Audio API oscillators:
@@ -226,7 +268,7 @@ make docs-test
 8. **Table & Touch Containment**: `.table-wrapper` with touch scrolling and `min-width: 520px`.
 9. **Relative Path Invariants**: All asset links use relative addressing (`./`) for `/DesignPatterns/` GitHub Pages.
 10. **Static Bundle Footprint**: Bundle size strictly $<25\text{MB}$.
-11. **Mermaid ID Uniqueness & Clean Navigation**: 84+ unique IDs, isolated rendering, zero legacy footer links.
+11. **Mermaid Diagram ID Uniqueness & Isolation**: 78+ unique IDs, isolated rendering, zero legacy footer links.
 12. **Unicode Monospace Box-Drawing Alignment**: 100% of ASCII and Unicode box tables and cards aligned.
 13. **Collapsible Details & Zero Raw HTML Block Escaping**: 100% semantic `<details>` with valid summary and body.
 14. **Monospace Semantic Badging**: Framework and pattern badges valid and rendered.
@@ -248,3 +290,10 @@ make docs-test
 | `make lint` | Runs Ruff linter + box alignment check |
 | `make ci` | Runs full CI audit suite locally (test + lint + docs-test) |
 | `make clean` | Cleans `_site/` and pycache artifacts |
+
+---
+
+## 🚀 GitHub Actions CI/CD Architecture
+
+- **`ci.yml`**: Triggers on `push` (`main`, `feature/**`) and `pull_request` (`main`). Runs canonical `make test`, `make lint`, and `make docs-test`.
+- **`docs-publish.yml`**: Triggers on `push` to `main`. Runs `make docs-build`, `make docs-test`, and automatically deploys `_site` to GitHub Pages (`https://vadde.github.io/DesignPatterns/`).
