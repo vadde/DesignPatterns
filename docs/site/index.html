@@ -200,20 +200,24 @@
           </div>
         </div>
 
-        <!-- Master Pattern Relationships Diagram Card -->
-        <div class="hero-diagram-card">
-          <div class="diagram-card-header">
-            <div class="diagram-title-cluster">
+        <!-- Master Pattern Relationships Diagram Card (Canvas Container) -->
+        <div class="canvas-container hero-diagram-card" id="canvas-mermaid-diagram-hero">
+          <div class="canvas-header-bar">
+            <div class="canvas-type-tag">
               <span class="dna-label dna-label-blueprint">Master Architecture</span>
-              <h3 class="diagram-heading">Systemic Pattern Relationships (Creational → Structural → Behavioral → Architectural)</h3>
+              <span>Systemic Pattern Relationships (Creational → Structural → Behavioral → Architectural)</span>
             </div>
-            <button class="theater-launch-btn" data-target="mermaid-diagram-hero" title="Open Fullscreen Theater Workbench">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
-              <span>Theater Mode</span>
-            </button>
+            <div class="canvas-controls-group">
+              <button class="canvas-tool-btn zoom-out-btn" title="Zoom Out">−</button>
+              <span class="zoom-level-badge">100%</span>
+              <button class="canvas-tool-btn zoom-in-btn" title="Zoom In">+</button>
+              <button class="canvas-tool-btn zoom-reset-btn" title="Reset Zoom">⟲</button>
+              <button class="canvas-tool-btn fullscreen-btn" title="View Fullscreen Theater">⛶</button>
+            </div>
           </div>
-          <div class="mermaid-container">
-            <pre class="mermaid" id="mermaid-diagram-hero">
+          <div class="canvas-viewport">
+            <div class="canvas-content-surface">
+              <pre class="mermaid" id="mermaid-diagram-hero">
 graph TB
     subgraph Creational["🔨 Creational"]
         S["01 Singleton"]
@@ -284,35 +288,50 @@ graph TB
             </pre>
           </div>
         </div>
-      </section>
+        <div class="canvas-caption">Systemic pattern relationship graph &amp; cross-tier architectural dependencies</div>
+      </div>
+    </section>
 
-      <!-- Chapters Content Container -->
-      <section class="chapters-container" id="chapters-container">
-        <!-- CHAPTERS_INJECTION_POINT -->
-      </section>
-    </main>
+    <!-- Reading Mode Toolbar (Expand / Collapse & Focus Mode - 1:1 DSA Standard) -->
+    <div class="reading-controls-bar">
+      <div class="mode-toggles-cluster">
+        <button class="mode-btn" data-action="expand-all" title="Expand all pattern chapters">⊞ Expand All</button>
+        <button class="mode-btn active" data-action="focus-mode" title="Focus mode: Only expand one pattern at a time">🎯 Focus Mode</button>
+        <button class="mode-btn" data-action="collapse-all" title="Collapse all pattern chapters">⊟ Collapse All</button>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-dim);">
+        Click chapter headers to toggle accordion
+      </div>
+    </div>
+
+    <!-- Chapters Content Container -->
+    <section class="chapters-container" id="chapters-container">
+      <!-- CHAPTERS_INJECTION_POINT -->
+    </section>
+  </main>
+</div>
+
+<!-- Fullscreen Theater Mode Workbench (Native Top Layer) -->
+<dialog id="theater-modal" class="theater-dialog theater-modal" aria-labelledby="theater-title" aria-modal="true">
+  <div class="theater-header-bar">
+    <div class="theater-title-cluster">
+      <span class="theater-icon">🗺️</span>
+      <h3 id="theater-title" class="theater-title">Architecture Canvas</h3>
+      <span class="nav-pill" id="theater-tag">Theater Mode</span>
+    </div>
+    <div class="theater-controls-cluster">
+      <button class="theater-tool-btn" id="theater-zoom-out" title="Zoom Out (−)">−</button>
+      <span class="zoom-level-badge" id="theater-zoom-badge">100%</span>
+      <button class="theater-tool-btn" id="theater-zoom-in" title="Zoom In (+)">+</button>
+      <button class="theater-tool-btn" id="theater-zoom-reset" title="Reset Zoom (⟲)">100%</button>
+      <button class="theater-tool-btn" id="theater-zoom-fit" title="Fit to Viewport">Fit</button>
+      <button class="theater-close-btn" id="theater-close-btn" title="Close Theater (Esc)">✕ Close</button>
+    </div>
   </div>
-
-  <!-- Fullscreen Theater Mode Workbench -->
-  <dialog class="theater-modal" id="theater-modal" aria-label="Fullscreen Architecture Diagram Workbench">
-    <div class="theater-header-bar">
-      <div class="theater-title-cluster">
-        <span class="theater-icon">📐</span>
-        <span class="theater-title" id="theater-diagram-title">Architecture Diagram Workbench</span>
-      </div>
-      <div class="theater-controls-cluster">
-        <button class="theater-tool-btn" id="theater-zoom-out" title="Zoom Out (−)">−</button>
-        <button class="theater-tool-btn" id="theater-zoom-in" title="Zoom In (+)">+</button>
-        <button class="theater-tool-btn" id="theater-zoom-reset" title="100% Native Scale">100%</button>
-        <button class="theater-tool-btn" id="theater-zoom-fit" title="Fit to Screen">Fit</button>
-        <span class="theater-zoom-badge" id="theater-zoom-badge">100%</span>
-        <button class="theater-tool-btn theater-close-btn" id="theater-close-btn" title="Close Theater (Esc)">✕</button>
-      </div>
-    </div>
-    <div class="theater-viewport" id="theater-viewport">
-      <div class="theater-content-surface" id="theater-content-surface"></div>
-    </div>
-  </dialog>
+  <div class="theater-viewport" id="theater-viewport">
+    <div class="theater-content-surface" id="theater-surface"></div>
+  </div>
+</dialog>
 
   <!-- Global Fuzzy Search Modal HUD -->
   <dialog class="search-modal" id="search-modal" aria-label="Global Search Modal">

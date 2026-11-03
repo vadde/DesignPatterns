@@ -2,7 +2,7 @@
    vadde/DesignPatterns — Year 2500 Cosmic Liquid-Glass & Aero Mica Design System
    ============================================================================== */
 
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&family=Orbitron:wght@600;800;900&family=Outfit:wght@600;700;800;900&family=Rajdhani:wght@600;700&display=swap');
 
 /* ------------------------------------------------------------------------------
    1. COLOR PALETTES & THEME ENGINE
@@ -142,9 +142,12 @@
 
 /* Base Dimensions & Typography */
 :root {
+  --font-display: 'Outfit', 'Rajdhani', -apple-system, sans-serif;
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
-  --sidebar-width: 330px;
+  --font-hud: 'Orbitron', 'Chakra Petch', sans-serif;
+  --sidebar-width: 340px;
   --topbar-height: 64px;
   --radius-sm: 8px;
   --radius-md: 14px;
@@ -606,7 +609,9 @@ body.sidebar-collapsed #sidebar-resizer {
 
 .sidebar-nav-tree {
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
+  overflow-x: hidden;
   padding: 10px 8px;
   display: flex;
   flex-direction: column;
@@ -617,9 +622,10 @@ body.sidebar-collapsed #sidebar-resizer {
 .nav-tree-group {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0 !important;
+  min-height: fit-content !important;
   border-radius: var(--radius-sm);
-  overflow: hidden;
-  margin-bottom: 3px;
+  margin-bottom: 4px;
 }
 
 .nav-tree-header {
@@ -627,6 +633,7 @@ body.sidebar-collapsed #sidebar-resizer {
   align-items: center;
   justify-content: space-between;
   padding: 8px 10px;
+  min-height: 38px;
   border-radius: var(--radius-sm);
   background: transparent;
   cursor: pointer;
@@ -1102,6 +1109,80 @@ body.resizing-sidebar {
    7. CHAPTER ACCORDION CARDS & MODERN CSS CONTENT-VISIBILITY
    ------------------------------------------------------------------------------ */
 
+/* Reading Controls Toolbar (Expand / Collapse & Focus Accordion - 1:1 DSA Standard) */
+.reading-controls-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  border-radius: var(--radius-md);
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--bg-card-border);
+  box-shadow: var(--shadow-sm);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.mode-toggles-cluster {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mode-btn {
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--t-fast) ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.mode-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-main);
+  border-color: var(--bg-card-border-glow);
+}
+
+.mode-btn.active {
+  background: rgba(0, 242, 254, 0.14);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  font-weight: 600;
+  box-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
+}
+
+[data-theme="mica"] .mode-btn.active {
+  background: rgba(14, 165, 233, 0.16);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+  box-shadow: 0 0 10px rgba(14, 165, 233, 0.25);
+}
+
+[data-theme="holo"] .mode-btn.active {
+  background: rgba(255, 170, 0, 0.18);
+  border-color: var(--accent-amber);
+  color: var(--accent-amber);
+  box-shadow: 0 0 10px rgba(255, 170, 0, 0.35);
+}
+
+[data-theme="matrix"] .mode-btn.active {
+  background: rgba(0, 255, 102, 0.15);
+  border-color: var(--accent-cyan);
+  color: var(--accent-cyan);
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+}
+
 .chapters-container {
   display: flex;
   flex-direction: column;
@@ -1435,46 +1516,126 @@ body.resizing-sidebar {
    11. MERMAID DIAGRAMS & SAFARI WEBKIT SIZING INVARIANTS
    ------------------------------------------------------------------------------ */
 
-.mermaid-workbench {
-  margin: 24px 0;
+.canvas-container {
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
   border: 1px solid var(--bg-card-border);
-  border-radius: var(--radius-md);
-  background: rgba(0, 0, 0, 0.35);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  margin: 20px 0;
+}
+
+.canvas-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  background: rgba(0, 0, 0, 0.2);
+  border-bottom: 1px solid var(--bg-card-border);
+  gap: 12px;
+}
+
+.canvas-type-tag {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.canvas-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.canvas-tool-btn {
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--bg-card-border);
+  color: var(--text-main);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all var(--t-fast) ease;
+}
+
+.canvas-tool-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: var(--accent-cyan);
+}
+
+.zoom-level-badge {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent-cyan);
+  min-width: 44px;
+  text-align: center;
+}
+
+.canvas-viewport {
+  overflow: auto;
+  padding: 28px 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 240px;
+  max-height: 640px;
+  cursor: grab;
+  user-select: none;
+}
+
+.canvas-viewport:active {
+  cursor: grabbing;
+}
+
+.canvas-content-surface {
+  transform-origin: center center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  will-change: transform;
+}
+
+.canvas-content-surface svg {
+  display: block;
+  max-width: 100%;
+  height: auto !important;
+}
+
+.canvas-caption {
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.15);
+  border-top: 1px solid var(--bg-card-border);
+  font-size: 0.72rem;
+  font-family: var(--font-mono);
+  color: var(--text-dim);
+  text-align: center;
+}
+
+/* Legacy alias support */
+.mermaid-workbench {
+  margin: 20px 0;
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--bg-card-border);
   overflow: hidden;
 }
 .mermaid-controls {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 14px;
-  background: rgba(255, 255, 255, 0.03);
+  padding: 10px 18px;
+  background: rgba(0, 0, 0, 0.2);
   border-bottom: 1px solid var(--bg-card-border);
 }
-.mermaid-badge {
-  font-size: 0.72rem;
-  font-family: var(--font-mono);
-  color: var(--text-dim);
-  text-transform: uppercase;
-}
-.theater-launch-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--bg-card-border);
-  border-radius: var(--radius-sm);
-  color: var(--text-muted);
-  font-size: 0.75rem;
-  cursor: pointer;
-  transition: all var(--t-fast) ease;
-}
-.theater-launch-btn:hover {
-  color: var(--accent-cyan);
-  border-color: var(--accent-cyan);
-  background: rgba(0, 242, 254, 0.1);
-}
-
 .mermaid-container {
   padding: 20px;
   display: flex;
@@ -1685,114 +1846,156 @@ body.resizing-sidebar {
    14. FULLSCREEN THEATER MODE WORKBENCH (<dialog>)
    ------------------------------------------------------------------------------ */
 
-.theater-modal {
-  width: 96vw;
-  height: 94vh;
-  max-width: 1600px;
-  max-height: 1000px;
-  border: 1px solid var(--accent-cyan);
-  border-radius: var(--radius-lg);
-  background: var(--bg-deep);
-  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 242, 254, 0.3);
-  margin: auto;
+#theater-modal,
+.theater-modal,
+.theater-dialog {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  max-width: 100vw;
+  max-height: 100vh;
+  margin: 0;
   padding: 0;
+  border: none;
+  background: rgba(5, 8, 19, 0.96);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  z-index: 999999;
   display: none;
   flex-direction: column;
-  color: var(--text-main);
-  z-index: 2000;
-  overscroll-behavior: contain; /* Modern web guidance */
+  overscroll-behavior: contain;
 }
-.theater-modal[open] {
+
+dialog#theater-modal[open],
+dialog.theater-modal[open],
+dialog.theater-dialog[open] {
   display: flex;
 }
-.theater-modal::backdrop {
-  background: rgba(0, 0, 0, 0.82);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+
+dialog#theater-modal::backdrop,
+dialog.theater-modal::backdrop,
+dialog.theater-dialog::backdrop {
+  background: rgba(3, 5, 12, 0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   overflow: hidden;
   overscroll-behavior: contain;
+  cursor: pointer;
+}
+
+body.theater-open {
+  overflow: hidden !important;
 }
 
 .theater-header-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 14px 20px;
-  background: rgba(255, 255, 255, 0.03);
-  border-bottom: 1px solid var(--bg-card-border);
+  padding: 16px 28px;
+  background: rgba(10, 15, 30, 0.94);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  gap: 16px;
+  flex-shrink: 0;
+  z-index: 10;
 }
+
 .theater-title-cluster {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
+
+.theater-icon {
+  font-size: 1.3rem;
+}
+
 .theater-title {
-  font-size: 0.95rem;
+  font-family: var(--font-display);
   font-weight: 700;
-  color: var(--text-main);
+  font-size: 1.15rem;
+  color: #f8fafc !important;
+  margin: 0;
+  letter-spacing: -0.01em;
 }
+
 .theater-controls-cluster {
   display: flex;
   align-items: center;
   gap: 8px;
 }
+
 .theater-tool-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid var(--bg-card-border);
+  padding: 6px 14px;
   border-radius: var(--radius-sm);
-  color: var(--text-main);
+  background: rgba(30, 41, 59, 0.95);
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  color: #f1f5f9;
+  font-family: var(--font-mono);
   font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
   transition: all var(--t-fast) ease;
 }
+
 .theater-tool-btn:hover {
-  background: rgba(0, 242, 254, 0.15);
+  background: rgba(51, 65, 85, 0.98);
   border-color: var(--accent-cyan);
-  color: var(--accent-cyan);
-}
-.theater-zoom-badge {
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
-  padding: 4px 8px;
-  color: var(--text-dim);
-}
-.theater-close-btn {
-  background: rgba(244, 63, 94, 0.15);
-  border-color: rgba(244, 63, 94, 0.4);
-  color: var(--accent-rose);
-}
-.theater-close-btn:hover {
-  background: var(--accent-rose);
   color: #ffffff;
+}
+
+.theater-close-btn {
+  background: rgba(239, 68, 68, 0.18) !important;
+  border-color: rgba(239, 68, 68, 0.45) !important;
+  color: #fca5a5 !important;
+}
+
+.theater-close-btn:hover {
+  background: rgba(239, 68, 68, 0.35) !important;
+  border-color: #ef4444 !important;
+  color: #ffffff !important;
 }
 
 .theater-viewport {
   flex: 1;
   overflow: hidden;
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
   cursor: grab;
-  background: radial-gradient(circle at center, rgba(0, 242, 254, 0.03) 0%, transparent 70%);
+  user-select: none;
+  -webkit-user-select: none;
+  padding: 24px;
 }
+
 .theater-viewport:active {
   cursor: grabbing;
 }
+
 .theater-content-surface {
-  transition: none !important; /* Sub-millisecond SLA */
   transform-origin: center center;
+  transition: none !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  border-radius: var(--radius-md);
   will-change: transform;
 }
+
+.theater-content-surface svg {
+  display: block !important;
+  max-width: none !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
 .theater-content-surface svg text,
-.theater-content-surface svg span,
-.theater-content-surface svg foreignObject {
+.theater-content-surface svg foreignObject,
+.theater-content-surface svg span {
   user-select: text !important;
-  cursor: text;
+  -webkit-user-select: text !important;
 }
 
 /* ------------------------------------------------------------------------------

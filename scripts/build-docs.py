@@ -345,20 +345,27 @@ def render_markdown(text: str, current_folder: str = "") -> str:
     for i, cb in enumerate(code_blocks):
         text = text.replace(f"___CODE_PLACEHOLDER_{i}___", cb)
 
-    # 11. Restore mermaid blocks into Theater Workbenches
+    # 11. Restore mermaid blocks into Canvas Containers (1:1 DSA standard)
     for i, (diag_id, code) in enumerate(mermaid_blocks):
+        escaped_mermaid = html.escape(code.strip())
         wb = (
-            f'<div class="mermaid-workbench" data-diagram-id="{diag_id}">\n'
-            f'  <div class="mermaid-controls">\n'
-            f'    <span class="mermaid-badge">Architecture Blueprint</span>\n'
-            f'    <button class="theater-launch-btn" data-target="{diag_id}" title="Open Fullscreen Theater Workbench">\n'
-            f'      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>\n'
-            f'      <span>Theater Mode</span>\n'
-            f'    </button>\n'
+            f'<div class="canvas-container" id="canvas-{diag_id}">\n'
+            f'  <div class="canvas-header-bar">\n'
+            f'    <span class="canvas-type-tag">📐 Architecture Blueprint · State Machine</span>\n'
+            f'    <div class="canvas-controls-group">\n'
+            f'      <button class="canvas-tool-btn zoom-out-btn" title="Zoom Out">−</button>\n'
+            f'      <span class="zoom-level-badge">100%</span>\n'
+            f'      <button class="canvas-tool-btn zoom-in-btn" title="Zoom In">+</button>\n'
+            f'      <button class="canvas-tool-btn zoom-reset-btn" title="Reset Zoom">⟲</button>\n'
+            f'      <button class="canvas-tool-btn fullscreen-btn" title="View Fullscreen Theater">⛶</button>\n'
+            f'    </div>\n'
             f'  </div>\n'
-            f'  <div class="mermaid-container">\n'
-            f'    <pre class="mermaid" id="{diag_id}">{code}</pre>\n'
+            f'  <div class="canvas-viewport">\n'
+            f'    <div class="canvas-content-surface">\n'
+            f'      <pre class="mermaid" id="{diag_id}">\n{escaped_mermaid}\n      </pre>\n'
+            f'    </div>\n'
             f'  </div>\n'
+            f'  <div class="canvas-caption">Architecture &amp; structural interaction graph</div>\n'
             f'</div>'
         )
         text = text.replace(f"___MERMAID_PLACEHOLDER_{i}___", wb)

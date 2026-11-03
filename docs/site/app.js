@@ -587,23 +587,32 @@
         }
       } catch (e) {}
     }
+    // Expand Chapter 00 Foundations by default on initial arrival so content is immediately visible
+    const firstChapter = document.querySelector('.pattern-chapter');
+    if (firstChapter) {
+      firstChapter.classList.remove('is-collapsed');
+      const toggleBtn = firstChapter.querySelector('.chapter-toggle-btn');
+      if (toggleBtn) toggleBtn.innerText = 'Collapse';
+      const firstGroup = document.querySelector('.nav-tree-group');
+      if (firstGroup) firstGroup.classList.add('expanded');
+      triggerDiagramRenders(firstChapter);
+    }
   }
 
   // ---------------------------------------------------------------------------
-  // 8. CHAPTER ACCORDIONS, FOCUS MODE & BATCH EXPAND SLA
+  // 8. CHAPTER ACCORDIONS, FOCUS MODE & BATCH EXPAND SLA (1:1 DSA STANDARD)
   // ---------------------------------------------------------------------------
   function initCollapsibleChapters() {
-    const expandAllBtn = document.getElementById('btn-expand-all') || document.getElementById('expand-all-btn');
-    const collapseAllBtn = document.getElementById('btn-collapse-all') || document.getElementById('collapse-all-btn');
-    const focusModeBtn = document.getElementById('btn-focus-mode');
+    const expandAllBtns = document.querySelectorAll('#btn-expand-all, .btn-expand-all, [data-action="expand-all"]');
+    const collapseAllBtns = document.querySelectorAll('#btn-collapse-all, .btn-collapse-all, [data-action="collapse-all"]');
+    const focusModeBtns = document.querySelectorAll('#btn-focus-mode, .btn-focus-mode, [data-action="focus-mode"]');
     const sidebarExpandBtn = document.getElementById('sidebar-expand-all');
     const sidebarCollapseBtn = document.getElementById('sidebar-collapse-all');
 
-    function setActiveReadingBtn(btn) {
-      [expandAllBtn, focusModeBtn, collapseAllBtn].forEach(b => {
-        if (b) b.classList.remove('active');
-      });
-      if (btn) btn.classList.add('active');
+    function setActiveReadingBtn(action) {
+      expandAllBtns.forEach(b => b.classList.toggle('active', action === 'expand-all'));
+      collapseAllBtns.forEach(b => b.classList.toggle('active', action === 'collapse-all'));
+      focusModeBtns.forEach(b => b.classList.toggle('active', action === 'focus-mode'));
     }
 
     // Click handler for Chapter Header Bar
@@ -655,16 +664,16 @@
       });
     });
 
-    // Expand All Chapters & Details
-    if (expandAllBtn) {
-      expandAllBtn.addEventListener('click', () => {
+    // Expand All Chapters & Details (High performance: zero synchronous diagram render freeze)
+    expandAllBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
         STATE.isFocusMode = false;
         STATE.isBatchExpanding = true;
-        setActiveReadingBtn(expandAllBtn);
+        setActiveReadingBtn('expand-all');
         document.querySelectorAll('.pattern-chapter').forEach(c => {
           c.classList.remove('is-collapsed');
-          const btn = c.querySelector('.chapter-toggle-btn');
-          if (btn) btn.innerText = 'Collapse';
+          const tBtn = c.querySelector('.chapter-toggle-btn');
+          if (tBtn) tBtn.innerText = 'Collapse';
         });
         document.querySelectorAll('.problem-card, .theory-details, .md-details').forEach(d => {
           d.open = true;
@@ -675,17 +684,17 @@
         }, 50);
         HapticAudio.expand();
       });
-    }
+    });
 
     // Collapse All Chapters & Details
-    if (collapseAllBtn) {
-      collapseAllBtn.addEventListener('click', () => {
+    collapseAllBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
         STATE.isFocusMode = false;
-        setActiveReadingBtn(collapseAllBtn);
+        setActiveReadingBtn('collapse-all');
         document.querySelectorAll('.pattern-chapter').forEach(c => {
           c.classList.add('is-collapsed');
-          const btn = c.querySelector('.chapter-toggle-btn');
-          if (btn) btn.innerText = 'Expand';
+          const tBtn = c.querySelector('.chapter-toggle-btn');
+          if (tBtn) tBtn.innerText = 'Expand';
         });
         document.querySelectorAll('.problem-card, .md-details').forEach(d => {
           d.open = false;
@@ -695,13 +704,13 @@
         document.querySelectorAll('.nav-tree-link').forEach(l => l.classList.remove('active'));
         HapticAudio.collapse();
       });
-    }
+    });
 
     // Focus Mode Toggle / Activate
-    if (focusModeBtn) {
-      focusModeBtn.addEventListener('click', () => {
+    focusModeBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
         STATE.isFocusMode = true;
-        setActiveReadingBtn(focusModeBtn);
+        setActiveReadingBtn('focus-mode');
         // Collapse all except first open chapter
         const chapters = Array.from(document.querySelectorAll('.pattern-chapter'));
         let foundOpen = false;
@@ -710,19 +719,19 @@
             foundOpen = true;
           } else {
             c.classList.add('is-collapsed');
-            const btn = c.querySelector('.chapter-toggle-btn');
-            if (btn) btn.innerText = 'Expand';
+            const tBtn = c.querySelector('.chapter-toggle-btn');
+            if (tBtn) tBtn.innerText = 'Expand';
           }
         });
         if (!foundOpen && chapters.length > 0) {
           chapters[0].classList.remove('is-collapsed');
-          const btn = chapters[0].querySelector('.chapter-toggle-btn');
-          if (btn) btn.innerText = 'Collapse';
+          const tBtn = chapters[0].querySelector('.chapter-toggle-btn');
+          if (tBtn) tBtn.innerText = 'Collapse';
           triggerDiagramRenders(chapters[0]);
         }
         HapticAudio.tap();
       });
-    }
+    });
 
     // Sidebar Expand / Collapse All
     if (sidebarExpandBtn) {
@@ -931,208 +940,426 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 10. LAZY MERMAID RENDERING & FULLSCREEN THEATER WORKBENCH
+  // 10. ZOOMABLE MERMAID CANVAS ENGINE & TOP-LAYER THEATER MODAL (DSA 1:1)
   // ---------------------------------------------------------------------------
-  async function renderVisibleDiagrams(scope = document) {
-    if (!window.mermaid) return;
+  function initZoomableCanvases() {
+    const theaterModal = document.getElementById('theater-modal');
+    const theaterTitle = document.getElementById('theater-title');
+    const theaterSurface = document.getElementById('theater-surface');
+    const theaterViewport = document.getElementById('theater-viewport');
+    const closeTheaterBtn = document.getElementById('theater-close-btn');
+    const theaterZoomIn = document.getElementById('theater-zoom-in');
+    const theaterZoomOut = document.getElementById('theater-zoom-out');
+    const theaterZoomReset = document.getElementById('theater-zoom-reset');
+    const theaterZoomFit = document.getElementById('theater-zoom-fit');
+    const theaterZoomBadge = document.getElementById('theater-zoom-badge');
 
-    const mermaidPres = scope.querySelectorAll('pre.mermaid:not([data-processed="true"])');
-    for (const pre of mermaidPres) {
-      const id = pre.id;
-      if (!id || STATE.renderedDiagrams.has(id)) continue;
+    let activeTheaterZoom = 1.0;
+    let activeTheaterPanX = 0;
+    let activeTheaterPanY = 0;
+    let isTheaterPanning = false;
+    let theaterStartX = 0;
+    let theaterStartY = 0;
+    let savedScrollY = 0;
+    let activeSourceContainer = null;
+    let cachedVbW = 800;
+    let cachedVbH = 500;
 
-      const code = pre.textContent.trim();
-      try {
-        const renderId = `svg-${id}`;
-        const { svg, bindFunctions } = await window.mermaid.render(renderId, code);
-        pre.innerHTML = svg;
-        pre.setAttribute('data-processed', 'true');
-        STATE.renderedDiagrams.add(id);
+    function applyTheaterTransform() {
+      if (!theaterSurface) return;
+      theaterSurface.style.transform = `translate(${activeTheaterPanX}px, ${activeTheaterPanY}px) scale(${activeTheaterZoom})`;
+      if (theaterZoomBadge) theaterZoomBadge.innerText = `${Math.round(activeTheaterZoom * 100)}%`;
+    }
 
-        if (bindFunctions) bindFunctions(pre);
-
-        // Safari WebKit sizing invariant injection
-        const svgEl = pre.querySelector('svg');
+    function calculateFitScale(svgEl) {
+      if (!theaterViewport) return 1.0;
+      let vbW = cachedVbW;
+      let vbH = cachedVbH;
+      if (!vbW || !vbH) {
         if (svgEl) {
-          const viewBox = svgEl.getAttribute('viewBox');
-          if (viewBox) {
-            const parts = viewBox.split(/[\s,]+/).map(Number);
-            if (parts.length === 4) {
-              const vbW = parts[2];
-              const vbH = parts[3];
-              svgEl.setAttribute('width', vbW);
-              svgEl.setAttribute('height', vbH);
-              svgEl.style.aspectRatio = `${vbW} / ${vbH}`;
+          const vb = svgEl.getAttribute('viewBox');
+          if (vb) {
+            const parts = vb.trim().split(/[\s,]+/).map(Number);
+            if (parts.length >= 4 && parts[2] > 0 && parts[3] > 0) {
+              vbW = parts[2];
+              vbH = parts[3];
             }
           }
         }
-      } catch (err) {
-        console.warn(`Mermaid render failed for ${id}:`, err);
       }
+      vbW = vbW || 800;
+      vbH = vbH || 500;
+      const availW = Math.max(300, (theaterViewport.clientWidth || window.innerWidth) - 64);
+      const availH = Math.max(200, (theaterViewport.clientHeight || window.innerHeight) - 64);
+      const fitW = availW / vbW;
+      const fitH = availH / vbH;
+      const scale = Math.min(fitW, fitH);
+      return Math.max(0.15, Math.min(scale, 3.5));
     }
-  }
 
-  function initTheaterWorkbench() {
-    const modal = document.getElementById('theater-modal');
-    const surface = document.getElementById('theater-content-surface');
-    const titleEl = document.getElementById('theater-diagram-title');
-    const zoomBadge = document.getElementById('theater-zoom-badge');
-    const closeBtn = document.getElementById('theater-close-btn');
-    const zoomInBtn = document.getElementById('theater-zoom-in');
-    const zoomOutBtn = document.getElementById('theater-zoom-out');
-    const zoomResetBtn = document.getElementById('theater-zoom-reset');
-    const zoomFitBtn = document.getElementById('theater-zoom-fit');
-    const viewport = document.getElementById('theater-viewport');
+    async function openTheater(title, sourceContainer) {
+      if (!theaterModal || !theaterSurface || !sourceContainer) return;
 
-    if (!modal || !surface) return;
+      // 1. Save scroll position precisely BEFORE opening
+      savedScrollY = window.scrollY || window.pageYOffset;
+      activeSourceContainer = sourceContainer;
 
-    // Launch theater on button click
-    document.addEventListener('click', async e => {
-      const launchBtn = e.target.closest('.theater-launch-btn');
-      if (!launchBtn) return;
-
-      const targetId = launchBtn.dataset.target;
-      const sourcePre = document.getElementById(targetId);
-      if (!sourcePre) return;
-
-      // Ensure diagram is rendered
-      if (!sourcePre.hasAttribute('data-processed')) {
-        await renderVisibleDiagrams(sourcePre.parentElement);
+      // Clean emoji duplication in header
+      const emojiMatch = title.match(/^(\p{Extended_Pictographic}+|\S+)\s*(.*)$/u);
+      if (emojiMatch && emojiMatch[2]) {
+        const iconEl = theaterModal.querySelector('.theater-icon');
+        if (iconEl) iconEl.innerText = emojiMatch[1];
+        if (theaterTitle) theaterTitle.innerText = emojiMatch[2];
+      } else {
+        if (theaterTitle) theaterTitle.innerText = title;
       }
+      theaterSurface.innerHTML = '';
 
-      const svgEl = sourcePre.querySelector('svg');
-      if (!svgEl) return;
-
-      STATE.theater.savedScrollY = window.pageYOffset;
-      STATE.theater.activeDiagramId = targetId;
-
-      // Cache dimensions from viewBox
-      const vb = svgEl.getAttribute('viewBox');
-      if (vb) {
-        const parts = vb.split(/[\s,]+/).map(Number);
-        if (parts.length === 4) {
-          STATE.theater.cachedVbW = parts[2];
-          STATE.theater.cachedVbH = parts[3];
-        }
-      }
-
-      // Clone SVG into theater surface
-      surface.innerHTML = svgEl.outerHTML;
-      if (titleEl) {
-        const chapter = sourcePre.closest('.pattern-chapter');
-        const chapterTitle = chapter ? chapter.querySelector('.chapter-title').textContent : 'Master Relationships';
-        titleEl.textContent = `Architecture Workbench: ${chapterTitle}`;
-      }
-
-      modal.showModal();
-      HapticAudio.theaterOpen();
-      applyTheaterFit();
-    });
-
-    // Close Theater
-    function closeTheater() {
-      if (!modal.open) return;
-      modal.close();
-      surface.innerHTML = '';
-      window.scrollTo({ top: STATE.theater.savedScrollY, behavior: 'instant' });
-      HapticAudio.collapse();
-
-      // Pulse focus back to source diagram
-      if (STATE.theater.activeDiagramId) {
-        const source = document.getElementById(STATE.theater.activeDiagramId);
-        if (source) {
-          const card = source.closest('.mermaid-workbench, .hero-diagram-card');
-          if (card) {
-            card.classList.add('flash-focus');
-            setTimeout(() => card.classList.remove('flash-focus'), 1800);
+      // 2. Clone ONLY the SVG element directly (no <pre> or wrapper clutter!)
+      let originalSvg = sourceContainer.querySelector('.mermaid svg');
+      if (!originalSvg) {
+        const pre = sourceContainer.querySelector('.mermaid');
+        if (pre && window.mermaid) {
+          try {
+            await renderMermaidElement(pre);
+            originalSvg = pre.querySelector('svg') || sourceContainer.querySelector('.mermaid svg');
+          } catch (e) {
+            console.warn('Theater mode on-demand render failed:', e);
           }
         }
       }
-    }
 
-    if (closeBtn) closeBtn.addEventListener('click', closeTheater);
+      if (originalSvg) {
+        const cleanSvg = originalSvg.cloneNode(true);
+        cleanSvg.removeAttribute('style');
 
-    // ANTI-DISMISSAL RULE:
-    // Clicks on the viewport or dialog backdrop do NOT close the modal.
-    // Only the explicit close button or Escape key closes the theater workbench.
-    modal.addEventListener('cancel', e => {
-      e.preventDefault();
-      closeTheater();
-    });
-
-    // Sub-millisecond Zoom controls
-    function updateTransform() {
-      surface.style.transform = `translate(${STATE.theater.panX}px, ${STATE.theater.panY}px) scale(${STATE.theater.scale})`;
-      if (zoomBadge) {
-        zoomBadge.textContent = `${Math.round(STATE.theater.scale * 100)}%`;
+        let vbW = 0, vbH = 0;
+        const vb = cleanSvg.getAttribute('viewBox');
+        if (vb) {
+          const parts = vb.trim().split(/[\s,]+/).map(Number);
+          if (parts.length >= 4 && parts[2] > 0 && parts[3] > 0) {
+            vbW = parts[2];
+            vbH = parts[3];
+          }
+        }
+        if (vbW && vbH) {
+          cachedVbW = vbW;
+          cachedVbH = vbH;
+          cleanSvg.style.width = vbW + 'px';
+          cleanSvg.style.height = vbH + 'px';
+        } else {
+          cachedVbW = 800;
+          cachedVbH = 500;
+          cleanSvg.style.width = '100%';
+          cleanSvg.style.height = 'auto';
+        }
+        cleanSvg.style.maxWidth = 'none';
+        cleanSvg.style.maxHeight = 'none';
+        theaterSurface.appendChild(cleanSvg);
+      } else {
+        const surf = sourceContainer.querySelector('.canvas-content-surface');
+        if (surf) theaterSurface.innerHTML = surf.innerHTML;
       }
+
+      // 3. Open modal and freeze background
+      theaterModal.showModal();
+      document.body.classList.add('theater-open');
+
+      // 4. Fit to Viewport by default: make use of screen boundaries
+      const renderedSvg = theaterSurface.querySelector('svg');
+      activeTheaterZoom = calculateFitScale(renderedSvg);
+      activeTheaterPanX = 0;
+      activeTheaterPanY = 0;
+      applyTheaterTransform();
+
+      HapticAudio.theaterOpen();
     }
 
-    function applyTheaterFit() {
-      const availW = viewport.clientWidth - 60;
-      const availH = viewport.clientHeight - 60;
-      const fitScale = Math.min(availW / STATE.theater.cachedVbW, availH / STATE.theater.cachedVbH, 2.5);
-      STATE.theater.scale = Math.max(fitScale, 0.2);
-      STATE.theater.panX = 0;
-      STATE.theater.panY = 0;
-      updateTransform();
+    function closeTheater() {
+      if (!theaterModal || !theaterModal.open) return;
+      theaterModal.close();
+      document.body.classList.remove('theater-open');
+      if (theaterSurface) theaterSurface.innerHTML = '';
+
+      // 5. Restore user's exact scroll position instantly (zero treasure hunt!)
+      window.scrollTo({ top: savedScrollY, behavior: 'instant' });
+
+      // 6. Highlight original container
+      if (activeSourceContainer) {
+        const container = activeSourceContainer;
+        requestAnimationFrame(() => {
+          container.classList.add('flash-focus');
+          setTimeout(() => container?.classList.remove('flash-focus'), 1800);
+        });
+      }
+
+      HapticAudio.collapse();
     }
 
-    if (zoomInBtn) {
-      zoomInBtn.addEventListener('click', () => {
-        STATE.theater.scale = Math.min(STATE.theater.scale * 1.25, 4.0);
-        updateTransform();
+    // Explicit dismiss ONLY: clicking close button (✕) or pressing Esc key
+    if (closeTheaterBtn) closeTheaterBtn.addEventListener('click', closeTheater);
+    if (theaterModal) {
+      theaterModal.addEventListener('cancel', e => {
+        e.preventDefault();
+        closeTheater();
+      });
+      theaterModal.addEventListener('close', closeTheater);
+    }
+
+    if (theaterZoomIn) {
+      theaterZoomIn.addEventListener('click', () => {
+        activeTheaterZoom = Math.min(5.0, Number((activeTheaterZoom + 0.25).toFixed(2)));
+        applyTheaterTransform();
+        HapticAudio.tap();
       });
     }
-    if (zoomOutBtn) {
-      zoomOutBtn.addEventListener('click', () => {
-        STATE.theater.scale = Math.max(STATE.theater.scale / 1.25, 0.25);
-        updateTransform();
+
+    if (theaterZoomOut) {
+      theaterZoomOut.addEventListener('click', () => {
+        activeTheaterZoom = Math.max(0.15, Number((activeTheaterZoom - 0.25).toFixed(2)));
+        applyTheaterTransform();
+        HapticAudio.tap();
       });
     }
-    if (zoomResetBtn) {
-      zoomResetBtn.addEventListener('click', () => {
-        STATE.theater.scale = 1.0;
-        STATE.theater.panX = 0;
-        STATE.theater.panY = 0;
-        updateTransform();
+
+    if (theaterZoomReset) {
+      theaterZoomReset.addEventListener('click', () => {
+        activeTheaterZoom = 1.0;
+        activeTheaterPanX = 0;
+        activeTheaterPanY = 0;
+        applyTheaterTransform();
+        HapticAudio.tap();
       });
     }
-    if (zoomFitBtn) {
-      zoomFitBtn.addEventListener('click', applyTheaterFit);
+
+    if (theaterZoomFit) {
+      theaterZoomFit.addEventListener('click', () => {
+        const svg = theaterSurface.querySelector('svg');
+        if (svg) {
+          activeTheaterZoom = calculateFitScale(svg);
+          activeTheaterPanX = 0;
+          activeTheaterPanY = 0;
+          applyTheaterTransform();
+          HapticAudio.tap();
+        }
+      });
     }
 
-    // Panning within viewport
-    viewport.addEventListener('pointerdown', e => {
-      // Don't pan if selecting text
-      if (e.target.closest('text, span, foreignObject')) return;
-      STATE.theater.isPanning = true;
-      STATE.theater.startX = e.clientX - STATE.theater.panX;
-      STATE.theater.startY = e.clientY - STATE.theater.panY;
-      viewport.setPointerCapture(e.pointerId);
-    });
+    // Theater draggable panning
+    if (theaterViewport) {
+      theaterViewport.addEventListener('pointerdown', e => {
+        if (e.target.closest('button') || e.target.closest('text') || e.target.closest('foreignObject') || e.target.closest('span')) return;
+        isTheaterPanning = true;
+        theaterStartX = e.clientX - activeTheaterPanX;
+        theaterStartY = e.clientY - activeTheaterPanY;
+        theaterViewport.setPointerCapture(e.pointerId);
+      });
 
-    viewport.addEventListener('pointermove', e => {
-      if (!STATE.theater.isPanning) return;
-      STATE.theater.panX = e.clientX - STATE.theater.startX;
-      STATE.theater.panY = e.clientY - STATE.theater.startY;
-      updateTransform();
-    });
+      theaterViewport.addEventListener('pointermove', e => {
+        if (!isTheaterPanning) return;
+        activeTheaterPanX = e.clientX - theaterStartX;
+        activeTheaterPanY = e.clientY - theaterStartY;
+        applyTheaterTransform();
+      });
 
-    viewport.addEventListener('pointerup', e => {
-      if (STATE.theater.isPanning) {
-        STATE.theater.isPanning = false;
-        viewport.releasePointerCapture(e.pointerId);
+      function stopTheaterPan(e) {
+        if (!isTheaterPanning) return;
+        isTheaterPanning = false;
+        try { theaterViewport.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+
+      theaterViewport.addEventListener('pointerup', stopTheaterPan);
+      theaterViewport.addEventListener('pointercancel', stopTheaterPan);
+
+      // Mouse wheel zoom in theater
+      theaterViewport.addEventListener('wheel', e => {
+        e.preventDefault();
+        const delta = e.deltaY < 0 ? 0.12 : -0.12;
+        activeTheaterZoom = Math.min(4.0, Math.max(0.2, activeTheaterZoom + delta));
+        applyTheaterTransform();
+      }, { passive: false });
+    }
+
+    // Global keyboard shortcuts for Theater
+    window.addEventListener('keydown', e => {
+      if (!theaterModal || !theaterModal.open) return;
+      if (e.key === '+' || e.key === '=') {
+        activeTheaterZoom = Math.min(5.0, Number((activeTheaterZoom + 0.25).toFixed(2)));
+        applyTheaterTransform();
+      } else if (e.key === '-' || e.key === '_') {
+        activeTheaterZoom = Math.max(0.15, Number((activeTheaterZoom - 0.25).toFixed(2)));
+        applyTheaterTransform();
+      } else if (e.key === '0') {
+        activeTheaterZoom = 1.0;
+        activeTheaterPanX = 0;
+        activeTheaterPanY = 0;
+        applyTheaterTransform();
+      } else if (e.key === 'f' || e.key === 'F') {
+        const svg = theaterSurface.querySelector('svg');
+        if (svg) {
+          activeTheaterZoom = calculateFitScale(svg);
+          activeTheaterPanX = 0;
+          activeTheaterPanY = 0;
+          applyTheaterTransform();
+        }
       }
     });
 
-    // Mouse wheel zoom
-    viewport.addEventListener('wheel', e => {
-      e.preventDefault();
-      const delta = e.deltaY < 0 ? 1.15 : 0.85;
-      STATE.theater.scale = Math.min(Math.max(STATE.theater.scale * delta, 0.2), 4.0);
-      updateTransform();
-    }, { passive: false });
+    // In-card zoomable canvases
+    document.querySelectorAll('.canvas-container').forEach(container => {
+      const viewport = container.querySelector('.canvas-viewport');
+      const surface = container.querySelector('.canvas-content-surface');
+      const badge = container.querySelector('.zoom-level-badge');
+      const zoomInBtn = container.querySelector('.zoom-in-btn');
+      const zoomOutBtn = container.querySelector('.zoom-out-btn');
+      const resetBtn = container.querySelector('.zoom-reset-btn');
+      const fullscreenBtn = container.querySelector('.fullscreen-btn');
+      const typeTag = container.querySelector('.canvas-type-tag')?.innerText || 'Architecture View';
+
+      if (!viewport || !surface) return;
+
+      let zoom = 1.0;
+      let panX = 0;
+      let panY = 0;
+      let isPanning = false;
+      let startX = 0;
+      let startY = 0;
+
+      function updateCardTransform() {
+        surface.style.transform = `scale(${zoom}) translate(${panX}px, ${panY}px)`;
+        if (badge) badge.innerText = `${Math.round(zoom * 100)}%`;
+      }
+
+      if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => {
+          zoom = Math.min(3.0, zoom + 0.15);
+          updateCardTransform();
+          HapticAudio.tap();
+        });
+      }
+
+      if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => {
+          zoom = Math.max(0.5, zoom - 0.15);
+          updateCardTransform();
+          HapticAudio.tap();
+        });
+      }
+
+      if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+          zoom = 1.0;
+          panX = 0;
+          panY = 0;
+          updateCardTransform();
+          HapticAudio.tap();
+        });
+      }
+
+      if (fullscreenBtn) {
+        fullscreenBtn.addEventListener('click', async () => {
+          let svgEl = container.querySelector('.mermaid svg');
+          if (!svgEl) {
+            const pre = container.querySelector('.mermaid:not([data-processed="true"])');
+            if (pre && window.mermaid) {
+              await renderMermaidElement(pre);
+            }
+          }
+          openTheater(typeTag, container);
+        });
+      }
+
+      viewport.addEventListener('pointerdown', e => {
+        if (e.target.closest('button')) return;
+        isPanning = true;
+        startX = e.clientX - panX;
+        startY = e.clientY - panY;
+        viewport.setPointerCapture(e.pointerId);
+      });
+
+      viewport.addEventListener('pointermove', e => {
+        if (!isPanning) return;
+        panX = e.clientX - startX;
+        panY = e.clientY - startY;
+        updateCardTransform();
+      });
+
+      function stopPan(e) {
+        if (!isPanning) return;
+        isPanning = false;
+        try { viewport.releasePointerCapture(e.pointerId); } catch (_) {}
+      }
+
+      viewport.addEventListener('pointerup', stopPan);
+      viewport.addEventListener('pointercancel', stopPan);
+    });
+  }
+
+  // ---------------------------------------------------------------------------
+  // 10b. ISOLATED MERMAID RENDERING & LAZY ENGINE
+  // ---------------------------------------------------------------------------
+  let mermaidCounter = 0;
+
+  async function renderMermaidElement(el) {
+    if (!window.mermaid || !el) return;
+    if (el.dataset.processed === "true" || el.dataset.processed === "rendering") return;
+
+    if (!el.id) {
+      el.id = 'mermaid-dyn-' + (++mermaidCounter);
+    }
+
+    const code = el.textContent.trim();
+    if (!code) return;
+
+    el.dataset.processed = "rendering";
+    try {
+      const renderId = 'svg-' + el.id.replace(/[^a-zA-Z0-9_-]/g, '_') + '-' + Math.random().toString(36).substr(2, 6);
+      const { svg, bindFunctions } = await window.mermaid.render(renderId, code);
+      el.innerHTML = svg;
+      if (bindFunctions) bindFunctions(el);
+
+      // Safari & Cross-Browser Sizing Normalization:
+      // Inject explicit intrinsic width, height, and aspect-ratio from viewBox
+      const svgEl = el.querySelector('svg');
+      if (svgEl) {
+        const vb = svgEl.getAttribute('viewBox');
+        if (vb) {
+          const parts = vb.trim().split(/[\s,]+/).map(Number);
+          if (parts.length >= 4 && parts[2] > 0 && parts[3] > 0) {
+            svgEl.setAttribute('width', parts[2]);
+            svgEl.setAttribute('height', parts[3]);
+            svgEl.style.aspectRatio = `${parts[2]} / ${parts[3]}`;
+          }
+        }
+      }
+
+      el.dataset.processed = "true";
+      STATE.renderedDiagrams.add(el.id);
+    } catch (e) {
+      console.warn('Mermaid render failure on element:', el.id, e);
+      el.dataset.processed = "error";
+      document.querySelectorAll('[id^="dmermaid"]').forEach(n => n.remove());
+    }
+  }
+
+  function renderVisibleDiagrams(container = document) {
+    if (!window.mermaid || !container) return;
+    const targets = container.querySelectorAll('.mermaid:not([data-processed="true"]):not([data-processed="rendering"])');
+    if (!targets.length) return;
+    targets.forEach(el => {
+      renderMermaidElement(el);
+    });
+  }
+
+  function triggerDiagramRenders(container) {
+    renderVisibleDiagrams(container);
+  }
+
+  function initLazyRenderers() {
+    const heroMermaid = document.getElementById('mermaid-diagram-hero');
+    if (heroMermaid) {
+      renderMermaidElement(heroMermaid);
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -1405,9 +1632,9 @@
   }
 
   // ---------------------------------------------------------------------------
-  // 15. INITIALIZATION SEQUENCE
+  // 15. INITIALIZATION SEQUENCE (DUAL-MODE READYSTATE RESILIENT - 1:1 DSA)
   // ---------------------------------------------------------------------------
-  document.addEventListener('DOMContentLoaded', () => {
+  function initAll() {
     initThemeEngine();
     initHaloEngine();
     initSidebarResizer();
@@ -1416,7 +1643,8 @@
     initCollapsibleChapters();
     initSidebarFilters();
     initScrollSpy();
-    initTheaterWorkbench();
+    initZoomableCanvases();
+    initLazyRenderers();
     initCopyButtons();
     initSearchHUD();
     initDecisionMatrix();
@@ -1448,6 +1676,14 @@
     setTimeout(() => {
       renderVisibleDiagrams();
     }, 100);
-  });
+
+    console.log('%c Ω DESIGN PATTERNS BIBLE — Activated ', 'background:#00f2fe;color:#03020a;font-weight:bold;padding:4px 8px;border-radius:4px;');
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAll);
+  } else {
+    initAll();
+  }
 
 })();
