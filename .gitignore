@@ -61,6 +61,8 @@ pnpm-debug.log*
 .nuxt/
 dist/
 build/
+_site/
+.playwright-mcp/
 
 # --- Python & Environments (if scripts are run locally) ---
 __pycache__/

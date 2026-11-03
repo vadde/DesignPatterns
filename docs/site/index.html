@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="liquid">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Patterns — The Definitive Python 3.14 Reference &amp; Command Deck</title>
+  <meta name="description" content="Master 28 Software Design Patterns, GoF Creational, Structural, Behavioral, and Enterprise Architectural patterns with typed Python 3.14 runnable code and interactive mental models.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%2300f2fe'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3Cstop offset='1' stop-color='%23ff4de1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='50%25' y='58%25' font-family='sans-serif' font-size='24' font-weight='900' fill='white' text-anchor='middle' dominant-baseline='middle'%3EDP%3C/text%3E%3C/svg%3E">
+
+  <!-- Relative Local Stylesheet -->
+  <link rel="stylesheet" href="./style.css">
+
+  <!-- KaTeX Mathematical Typesetting -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"></script>
+
+  <!-- Mermaid Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+  <script>
+    mermaid.initialize({
+      startOnLoad: false,
+      theme: 'base',
+      themeVariables: {
+        darkMode: true,
+        background: 'transparent',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        fontSize: '14px',
+        primaryColor: 'rgba(15, 23, 42, 0.9)',
+        primaryBorderColor: '#00f2fe',
+        primaryTextColor: '#f8fafc',
+        lineColor: '#38bdf8',
+        secondaryColor: 'rgba(30, 41, 59, 0.85)',
+        tertiaryColor: 'rgba(51, 65, 85, 0.75)',
+        textColor: '#f8fafc',
+        mainBkg: 'rgba(15, 23, 42, 0.85)',
+        nodeBorder: '#00f2fe',
+        clusterBkg: 'rgba(10, 16, 32, 0.65)',
+        clusterBorder: 'rgba(255, 255, 255, 0.15)',
+        titleColor: '#00f2fe',
+        edgeLabelBackground: 'rgba(13, 20, 39, 0.95)',
+        actorBkg: 'rgba(15, 23, 42, 0.9)',
+        actorBorder: '#00f2fe',
+        actorTextColor: '#f8fafc',
+        actorLineColor: '#64748b',
+        signalColor: '#38bdf8',
+        signalTextColor: '#f8fafc',
+        labelBoxBkgColor: 'rgba(15, 23, 42, 0.9)',
+        labelBoxBorderColor: '#a855f7',
+        labelTextColor: '#f8fafc',
+        loopTextColor: '#f8fafc',
+        noteBorderColor: '#f59e0b',
+        noteBkgColor: 'rgba(245, 158, 11, 0.15)',
+        noteTextColor: '#f8fafc',
+        cScale0: '#0284c7',
+        cScale1: '#7c3aed',
+        cScale2: '#059669',
+        cScale3: '#d97706',
+        cScale4: '#e11d48',
+        cScaleLabel0: '#ffffff',
+        cScaleLabel1: '#ffffff',
+        cScaleLabel2: '#ffffff',
+        cScaleLabel3: '#ffffff',
+        cScaleLabel4: '#ffffff'
+      },
+      flowchart: {
+        htmlLabels: true,
+        curve: 'basis',
+        useMaxWidth: false,
+        padding: 24,
+        nodeSpacing: 55,
+        rankSpacing: 55
+      },
+      mindmap: {
+        useMaxWidth: false,
+        padding: 20
+      }
+    });
+  </script>
+</head>
+<body>
+  <!-- Ambient Halo Lighting Engine -->
+  <div class="canvas-ambient-halo" aria-hidden="true">
+    <div class="halo-orb-pointer" id="halo-orb"></div>
+    <div class="halo-orb-aurora"></div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="header-glass">
+    <div class="header-left-cluster">
+      <button class="mobile-nav-toggle" id="mobile-nav-toggle" aria-label="Open Navigation">☰</button>
+      <button class="sidebar-dock-toggle" id="sidebar-dock-toggle" aria-label="Toggle Navigation Sidebar" title="Toggle Sidebar (⌘B / [)">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="9" y1="3" x2="9" y2="21"></line>
+        </svg>
+      </button>
+      <a href="#" class="brand-badge">
+        <div class="brand-logo-icon">🏛️</div>
+        <div class="brand-text-group">
+          <span class="brand-title">DESIGN PATTERNS</span>
+          <span class="brand-subtitle">Python 3.14 Architecture Bible</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="header-telemetry-cluster">
+      <div class="telemetry-chip">
+        <span class="pulse-dot"></span>
+        <span>PATTERNS: <strong>{{PATTERNS_COUNT}}</strong></span>
+      </div>
+      <div class="telemetry-chip">
+        <span>IMPLEMENTATIONS: <strong>{{EXAMPLES_COUNT}}</strong></span>
+      </div>
+      <div class="telemetry-chip">
+        <span>DIAGRAMS: <strong>{{DIAGRAMS_COUNT}}</strong></span>
+      </div>
+    </div>
+
+    <div class="header-controls-cluster">
+      <button class="hud-search-btn" id="hud-search-trigger" title="Global Fuzzy Search (⌘K)">
+        <span>Search patterns &amp; code...</span>
+        <span class="kbd-shortcut">⌘K</span>
+      </button>
+
+      <div class="theme-picker-group">
+        <button class="theme-pill-btn active" data-theme-set="liquid" title="Deep Space Liquid Glass">Liquid</button>
+        <button class="theme-pill-btn" data-theme-set="mica" title="Fluent Aero Mica">Mica</button>
+        <button class="theme-pill-btn" data-theme-set="holo" title="Holo 2050 Cyberpunk">Holo</button>
+        <button class="theme-pill-btn" data-theme-set="matrix" title="Matrix Obsidian">Matrix</button>
+      </div>
+
+      <button class="hud-tool-btn" id="audio-toggle-btn" title="Toggle Audio Feedback">🔊</button>
+      <a href="https://github.com/vadde/DesignPatterns" target="_blank" rel="noopener noreferrer" class="hud-tool-btn" title="View Source on GitHub">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+      </a>
+    </div>
+  </header>
+
+  <!-- Layout Container -->
+  <div class="layout-container">
+    <div class="mobile-drawer-backdrop" id="mobile-drawer-backdrop" aria-hidden="true"></div>
+    <button class="floating-sidebar-toggle" id="floating-sidebar-toggle" aria-label="Open Navigation Sidebar" title="Open Sidebar (⌘B / [)">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+        <line x1="9" y1="3" x2="9" y2="21"></line>
+      </svg>
+    </button>
+
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar" id="main-sidebar">
+      <div class="sidebar-search-row">
+        <div class="sidebar-search-box">
+          <input type="text" class="sidebar-search-input" id="sidebar-filter-input" placeholder="Filter chapters..." aria-label="Filter chapters">
+        </div>
+        <button class="sidebar-collapse-pill sidebar-close-btn" id="sidebar-close-btn" aria-label="Close navigation sidebar" title="Collapse sidebar (⌘B / [)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="15 18 9 12 15 6"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <div class="tree-controls-bar">
+        <button class="mini-tool-btn" id="sidebar-expand-all">⊞ Expand All</button>
+        <button class="mini-tool-btn" id="sidebar-collapse-all">⊟ Collapse All</button>
+      </div>
+
+      <div class="tier-filter-chips" id="tier-filter-chips">
+        <button class="tier-chip active" data-tier-filter="all">All</button>
+        <button class="tier-chip" data-tier-filter="Foundations">Foundations</button>
+        <button class="tier-chip" data-tier-filter="Creational">Creational</button>
+        <button class="tier-chip" data-tier-filter="Structural">Structural</button>
+        <button class="tier-chip" data-tier-filter="Behavioral">Behavioral</button>
+        <button class="tier-chip" data-tier-filter="Architectural">Architectural</button>
+        <button class="tier-chip" data-tier-filter="Capstone">Capstone</button>
+      </div>
+
+      <nav class="sidebar-nav-tree" id="sidebar-nav-tree" aria-label="Chapters Navigation">
+        <!-- SIDEBAR_NAV_INJECTION_POINT -->
+      </nav>
+    </aside>
+
+    <!-- Draggable Sidebar Resizer -->
+    <div class="sidebar-resizer" id="sidebar-resizer" role="separator" aria-orientation="vertical" aria-label="Resize navigation sidebar" title="Drag to adjust sidebar width (Double-click to reset)"></div>
+
+    <!-- Main Content Stage -->
+    <main class="content-area" id="main-content">
+      <!-- Hero Command Section -->
+      <section class="hero-command-deck">
+        <div class="hero-glass-card">
+          <div class="hero-badge-row">
+            <span class="hero-pill-badge">🚀 VISION 2500 COMMAND DECK</span>
+            <span class="hero-pill-badge badge-accent">PYTHON 3.14 READY</span>
+            <span class="hero-pill-badge badge-emerald">ZERO TOOLCHAIN</span>
+          </div>
+
+          <h1 class="hero-headline">The Definitive Software Design Patterns Compendium</h1>
+          <p class="hero-description">
+            Explore 28 deep architectural chapters, 5 foundational tiers, and 38 runnable Python 3.14 implementations with real-world sightings from <strong>Django</strong>, <strong>FastAPI</strong>, <strong>SQLAlchemy</strong>, and <strong>Celery</strong>. Built with sub-millisecond diagram workbenches, crystal glass aesthetics, and haptic acoustic feedback.
+          </p>
+
+          <div class="hero-action-row">
+            <button class="hero-btn primary" id="quick-finder-toggle-btn">
+              <span>🎯 Pattern Decision Matrix (F)</span>
+            </button>
+          </div>
+
+          <!-- Interactive Pattern Finder & Decision Matrix HUD -->
+          <div class="pattern-finder-hud" id="pattern-finder-hud" style="display: none;">
+            <div class="finder-header">
+              <div class="finder-title-group">
+                <span class="finder-icon">🗺️</span>
+                <div>
+                  <h3 class="finder-title">Pattern Decision Matrix &amp; Triage Engine</h3>
+                  <span class="finder-subtitle">"I have an architectural problem. Which pattern do I reach for?"</span>
+                </div>
+              </div>
+              <button class="finder-close-btn" id="finder-close-btn">✕</button>
+            </div>
+
+            <div class="finder-filter-bar">
+              <span class="filter-label">Filter by Framework:</span>
+              <div class="framework-filter-group" id="framework-filter-group">
+                <button class="framework-pill active" data-framework="all">All Frameworks</button>
+                <button class="framework-pill" data-framework="pure python">Pure Python</button>
+                <button class="framework-pill" data-framework="fastapi">FastAPI</button>
+                <button class="framework-pill" data-framework="django">Django</button>
+                <button class="framework-pill" data-framework="sqlalchemy">SQLAlchemy</button>
+                <button class="framework-pill" data-framework="celery">Celery</button>
+              </div>
+            </div>
+
+            <div class="finder-matrix-grid" id="finder-matrix-grid">
+              <!-- Dynamically populated or rendered -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Master Pattern Relationships Diagram Card (Canvas Container) -->
+        <div class="canvas-container hero-diagram-card" id="canvas-mermaid-diagram-hero">
+          <div class="canvas-header-bar">
+            <div class="canvas-type-tag">
+              <span class="dna-label dna-label-blueprint">Master Architecture</span>
+              <span>Systemic Pattern Relationships (Creational → Structural → Behavioral → Architectural)</span>
+            </div>
+            <div class="canvas-controls-group">
+              <button class="canvas-tool-btn zoom-out-btn" title="Zoom Out">−</button>
+              <span class="zoom-level-badge">100%</span>
+              <button class="canvas-tool-btn zoom-in-btn" title="Zoom In">+</button>
+              <button class="canvas-tool-btn zoom-reset-btn" title="Reset Zoom">⟲</button>
+              <button class="canvas-tool-btn fullscreen-btn" title="View Fullscreen Theater">⛶</button>
+            </div>
+          </div>
+          <div class="canvas-viewport">
+            <div class="canvas-content-surface">
+              <pre class="mermaid" id="mermaid-diagram-hero">
+graph TB
+    subgraph Creational["🔨 Creational"]
+        S["01 Singleton"]
+        FM["02 Factory Method"]
+        AF["03 Abstract Factory"]
+        B["04 Builder"]
+        P["05 Prototype"]
+    end
+
+    subgraph Structural["🧱 Structural"]
+        AD["06 Adapter"]
+        BR["07 Bridge"]
+        CO["08 Composite"]
+        DE["09 Decorator"]
+        FA["10 Facade"]
+        FW["11 Flyweight"]
+        PR["12 Proxy"]
+    end
+
+    subgraph Behavioral["💬 Behavioral"]
+        COR["13 Chain of Resp."]
+        CMD["14 Command"]
+        IT["15 Iterator"]
+        MED["16 Mediator"]
+        MEM["17 Memento"]
+        OBS["18 Observer"]
+        ST["19 State"]
+        STR["20 Strategy"]
+        TM["21 Template Method"]
+        VI["22 Visitor"]
+    end
+
+    subgraph Architectural["🚀 Architectural"]
+        RP["23 Repository"]
+        UOW["24 Unit of Work"]
+        DI["25 Dependency Injection"]
+        ES["26 Event Sourcing"]
+    end
+
+    FM --> AF
+    AF --> FM
+    B --> S
+    AF --> B
+    P --> S
+
+    AD --> BR
+    DE --> CO
+    PR --> DE
+    FA --> AD
+    FW --> FA
+
+    COR --> CO
+    CMD --> MEM
+    IT --> CO
+    MED --> OBS
+    OBS --> MED
+    ST --> STR
+    STR --> TM
+    VI --> CO
+    VI --> IT
+
+    RP --> FM
+    RP --> UOW
+    DI --> STR
+    DI --> FM
+    ES --> OBS
+    ES --> CMD
+            </pre>
+          </div>
+        </div>
+        <div class="canvas-caption">Systemic pattern relationship graph &amp; cross-tier architectural dependencies</div>
+      </div>
+    </section>
+
+    <!-- Reading Mode Toolbar (Expand / Collapse & Focus Mode - 1:1 DSA Standard) -->
+    <div class="reading-controls-bar">
+      <div class="mode-toggles-cluster">
+        <button class="mode-btn" id="btn-expand-all" data-action="expand-all" title="Expand all pattern chapters">⊞ Expand All</button>
+        <button class="mode-btn active" id="btn-focus-mode" data-action="focus-mode" title="Focus mode: Only expand one pattern at a time">🎯 Focus Mode</button>
+        <button class="mode-btn" id="btn-collapse-all" data-action="collapse-all" title="Collapse all pattern chapters">⊟ Collapse All</button>
+      </div>
+      <div style="font-family:var(--font-mono);font-size:0.75rem;color:var(--text-dim);">
+        Click chapter headers to toggle accordion
+      </div>
+    </div>
+
+    <!-- Chapters Content Container -->
+    <section class="chapters-container" id="chapters-container">
+      <!-- CHAPTERS_INJECTION_POINT -->
+    </section>
+  </main>
+</div>
+
+<!-- Fullscreen Theater Mode Workbench (Native Top Layer) -->
+<dialog id="theater-modal" class="theater-dialog theater-modal" aria-labelledby="theater-title" aria-modal="true">
+  <div class="theater-header-bar">
+    <div class="theater-title-cluster">
+      <span class="theater-icon">🗺️</span>
+      <h3 id="theater-title" class="theater-title">Architecture Canvas</h3>
+      <span class="nav-pill" id="theater-tag">Theater Mode</span>
+    </div>
+    <div class="theater-controls-cluster">
+      <button class="theater-tool-btn" id="theater-zoom-out" title="Zoom Out (−)">−</button>
+      <span class="zoom-level-badge" id="theater-zoom-badge">100%</span>
+      <button class="theater-tool-btn" id="theater-zoom-in" title="Zoom In (+)">+</button>
+      <button class="theater-tool-btn" id="theater-zoom-reset" title="Reset Zoom (⟲)">100%</button>
+      <button class="theater-tool-btn" id="theater-zoom-fit" title="Fit to Viewport">Fit</button>
+      <button class="theater-close-btn" id="theater-close-btn" title="Close Theater Workbench (Esc)" aria-label="Close Theater">
+        <svg class="close-icon-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+        <span class="close-btn-text">Close</span>
+        <kbd class="close-kbd-badge">ESC</kbd>
+      </button>
+    </div>
+  </div>
+  <div class="theater-viewport" id="theater-viewport">
+    <div class="theater-content-surface" id="theater-surface"></div>
+  </div>
+</dialog>
+
+  <!-- Global Fuzzy Search Modal HUD -->
+  <dialog class="search-modal" id="search-modal" aria-label="Global Search Modal">
+    <div class="search-card">
+      <div class="search-input-wrapper">
+        <svg class="search-input-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" class="search-input" id="search-dialog-input" placeholder="Search patterns, analogies, frameworks, or code..." autocomplete="off">
+        <span class="search-kbd-esc">ESC</span>
+      </div>
+      <div class="search-filter-pills" id="search-filter-pills">
+        <button class="search-pill active" data-search-filter="all">All</button>
+        <button class="search-pill" data-search-filter="Foundations">Foundations</button>
+        <button class="search-pill" data-search-filter="Creational">Creational</button>
+        <button class="search-pill" data-search-filter="Structural">Structural</button>
+        <button class="search-pill" data-search-filter="Behavioral">Behavioral</button>
+        <button class="search-pill" data-search-filter="Architectural">Architectural</button>
+      </div>
+      <div class="search-results-list" id="search-results-list">
+        <div class="search-empty-state">Type a keyword, GoF pattern, framework (FastAPI, Django, SQLAlchemy), or design intent...</div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Client-Side Runtime Script -->
+  <script src="./app.js"></script>
+</body>
+</html>

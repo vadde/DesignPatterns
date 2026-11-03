@@ -57,9 +57,10 @@ This repository is a comprehensive, notebook-style guide to software design patt
 *Beyond GoF — patterns that shape real-world systems at scale.*
 
 - [23 - Repository Pattern](./23%20-%20Repository%20Pattern%20%28Architectural%29/)
-- [24 - Dependency Injection](./24%20-%20Dependency%20Injection%20%28Architectural%29/)
-- [25 - Event Sourcing & CQRS](./25%20-%20Event%20Sourcing%20%26%20CQRS%20%28Architectural%29/)
-- [26 - Patterns in the Wild (Capstone)](./26%20-%20Patterns%20in%20the%20Wild%20%28Capstone%29/)
+- [24 - Unit of Work](./24%20-%20Unit%20of%20Work%20%28Architectural%29/)
+- [25 - Dependency Injection](./25%20-%20Dependency%20Injection%20%28Architectural%29/)
+- [26 - Event Sourcing & CQRS](./26%20-%20Event%20Sourcing%20%26%20CQRS%20%28Architectural%29/)
+- [27 - Patterns in the Wild (Capstone)](./27%20-%20Patterns%20in%20the%20Wild%20%28Capstone%29/)
 
 ---
 
@@ -92,8 +93,9 @@ This repository is a comprehensive, notebook-style guide to software design patt
 | Define a skeleton algorithm with customizable steps | Template Method | 21 |
 | Add operations to objects without modifying them | Visitor | 22 |
 | Abstract data persistence layer | Repository | 23 |
-| Decouple construction from usage of dependencies | Dependency Injection | 24 |
-| Track state changes as a sequence of events | Event Sourcing & CQRS | 25 |
+| Coordinate business transactions across repositories | Unit of Work | 24 |
+| Decouple construction from usage of dependencies | Dependency Injection | 25 |
+| Track state changes as a sequence of events | Event Sourcing & CQRS | 26 |
 
 ---
 
@@ -134,8 +136,9 @@ graph TB
 
     subgraph "Architectural"
         RP["23 Repository"]
-        DI["24 Dependency Injection"]
-        ES["25 Event Sourcing"]
+        UOW["24 Unit of Work"]
+        DI["25 Dependency Injection"]
+        ES["26 Event Sourcing"]
     end
 
     FM --> AF
@@ -161,6 +164,7 @@ graph TB
     VI --> IT
 
     RP --> FM
+    RP --> UOW
     DI --> STR
     DI --> FM
     ES --> OBS
@@ -175,7 +179,7 @@ graph TB
 2. **Go chapter-by-chapter** for a structured learning path, or **jump directly** to a pattern you need
 3. **Each chapter has a `theory.md`** — read this first for the conceptual deep-dive
 4. **Then explore `example_*.py` files** — runnable Python 3.14 code you can execute immediately
-5. **End with [Chapter 26 — Capstone](./26%20-%20Patterns%20in%20the%20Wild%20%28Capstone%29/)** for the decision matrix, anti-patterns, and interview playbook
+5. **End with [Chapter 27 — Capstone](./27%20-%20Patterns%20in%20the%20Wild%20%28Capstone%29/)** for the decision matrix, anti-patterns, and interview playbook
 
 ---
 

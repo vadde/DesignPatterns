@@ -90,7 +90,7 @@ You MUST follow the **ReAct** (Reasoning + Acting) loop augmented with **Reflexi
 
 ```
 ┌─────────────────────────────────────────────────────┐
-│                   ReAct + Reflexion                  │
+│                   ReAct + Reflexion                 │
 │                                                     │
 │  1. THINK   → Reason about the current task.        │
 │               What do I know? What's missing?       │

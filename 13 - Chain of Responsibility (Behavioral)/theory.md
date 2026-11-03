@@ -121,8 +121,8 @@ flowchart LR
     subgraph "GoF Classic (Stop at First Handler)"
         R1["Request"] --> H1["Auth"]
         H1 -->|"Not my job"| H2["Cache"]
-        H2 -->|"I can do this!"| End["Return Response"]
-        End -.x H3["Database (Ignored)"]
+        H2 -->|"I can do this!"| RespEnd["Return Response"]
+        RespEnd -. "never reached" .-> H3["Database (Ignored)"]
     end
     
     subgraph "Modern Middleware (Pass Through All)"
