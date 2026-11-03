@@ -1226,13 +1226,13 @@
       let startY = 0;
 
       function updateCardTransform() {
-        surface.style.transform = `scale(${zoom}) translate(${panX}px, ${panY}px)`;
+        surface.style.transform = `translate(${panX}px, ${panY}px) scale(${zoom})`;
         if (badge) badge.innerText = `${Math.round(zoom * 100)}%`;
       }
 
       if (zoomInBtn) {
         zoomInBtn.addEventListener('click', () => {
-          zoom = Math.min(3.0, zoom + 0.15);
+          zoom = Math.min(3.0, Number((zoom + 0.15).toFixed(2)));
           updateCardTransform();
           HapticAudio.tap();
         });
@@ -1240,7 +1240,7 @@
 
       if (zoomOutBtn) {
         zoomOutBtn.addEventListener('click', () => {
-          zoom = Math.max(0.5, zoom - 0.15);
+          zoom = Math.max(0.4, Number((zoom - 0.15).toFixed(2)));
           updateCardTransform();
           HapticAudio.tap();
         });
@@ -1270,7 +1270,7 @@
       }
 
       viewport.addEventListener('pointerdown', e => {
-        if (e.target.closest('button')) return;
+        if (e.target.closest('button') || e.target.closest('text') || e.target.closest('foreignObject') || e.target.closest('span')) return;
         isPanning = true;
         startX = e.clientX - panX;
         startY = e.clientY - panY;
@@ -1292,6 +1292,11 @@
 
       viewport.addEventListener('pointerup', stopPan);
       viewport.addEventListener('pointercancel', stopPan);
+
+      viewport.addEventListener('dblclick', e => {
+        if (e.target.closest('button')) return;
+        if (fullscreenBtn) fullscreenBtn.click();
+      });
     });
   }
 
@@ -1308,8 +1313,15 @@
       el.id = 'mermaid-dyn-' + (++mermaidCounter);
     }
 
-    const code = el.textContent.trim();
+    const code = el.getAttribute('data-mermaid-src') || el.textContent.trim();
     if (!code) return;
+    if (!el.getAttribute('data-mermaid-src')) {
+      el.setAttribute('data-mermaid-src', code);
+    }
+
+    if (document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
 
     el.dataset.processed = "rendering";
     try {

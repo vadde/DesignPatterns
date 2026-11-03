@@ -1684,15 +1684,12 @@ body.resizing-sidebar {
 
 .mermaid svg foreignObject div,
 .theater-content-surface svg foreignObject div {
-  display: flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  white-space: normal !important;
-  word-break: break-word !important;
+  display: inline-block !important;
   text-align: center !important;
-  line-height: 1.35 !important;
-  padding: 4px 8px !important;
   box-sizing: border-box !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  line-height: normal !important;
 }
 
 /* Flowchart & Architecture Nodes */
@@ -1722,7 +1719,7 @@ body.resizing-sidebar {
   fill: var(--text-main) !important;
   color: var(--text-main) !important;
   font-weight: 500 !important;
-  font-size: 0.88rem !important;
+  font-size: 14px !important;
 }
 
 /* Subgraph Clusters (Component Boundaries) */
@@ -1741,10 +1738,10 @@ body.resizing-sidebar {
 .theater-content-surface svg .cluster span {
   fill: var(--accent-cyan) !important;
   color: var(--accent-cyan) !important;
-  font-weight: 700 !important;
-  font-size: 0.85rem !important;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  text-transform: none !important;
+  letter-spacing: normal !important;
 }
 
 /* Edge Labels & Connectors */

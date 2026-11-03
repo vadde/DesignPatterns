@@ -199,7 +199,7 @@ import re
 with open('${SITE_DIR}/index.html') as f:
     content = f.read()
 
-diagram_ids = re.findall(r'<pre class=\"mermaid\" id=\"([^\"]+)\">', content)
+diagram_ids = re.findall(r'<pre[^>]*class=[\"\']mermaid[\"\'][^>]*id=[\"\']([^\"\']+)[\"\']', content)
 assert len(diagram_ids) >= 70, f'Expected >= 70 mermaid diagrams, found {len(diagram_ids)}'
 assert len(diagram_ids) == len(set(diagram_ids)), f'Duplicate diagram IDs detected! {len(diagram_ids)} total vs {len(set(diagram_ids))} unique'
 print(f'   ✅ Validated {len(diagram_ids)} isolated Mermaid diagrams with 100% unique IDs.')

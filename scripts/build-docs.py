@@ -382,7 +382,7 @@ def render_markdown(text: str, current_folder: str = "") -> str:
             f'  </div>\n'
             f'  <div class="canvas-viewport">\n'
             f'    <div class="canvas-content-surface">\n'
-            f'      <pre class="mermaid" id="{diag_id}">\n{escaped_mermaid}\n      </pre>\n'
+            f'      <pre class="mermaid" data-mermaid-src="{escaped_mermaid}" id="{diag_id}">\n{escaped_mermaid}\n      </pre>\n'
             f'    </div>\n'
             f'  </div>\n'
             f'  <div class="canvas-caption">{caption_text}</div>\n'
